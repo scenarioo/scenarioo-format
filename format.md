@@ -81,16 +81,16 @@ You probably want to run a regular build for generating the documentation data. 
 * The folder name of a *build folder* must be the URL encoded version of the `name` value in the `build.json`. If this is not the case, the folder is not considered a *build folder*. 
 * It is allowed to have other folders that are not *build folders* in a *branch folder*. They are ignored by Scenarioo.
 
-### Values
+### Fields
 
-* Mandatory values:
-  * `name`, `String`: Use something that reflects the uniqueness and order of your builds, e.g. the timestamp or a build sequence number.
-  * `date`, restricted `String`: Start date / time of the build (as a timestamp) --> TODO: Specify exact format
-* Important optional values:
-  * `revision`, `String`: the revision number in your version control system (e.g. changeset number).
-  * `status`, `String`: Whether the build was a `success` or `failed`. If the status is left empty, Scenarioo will calculate it from the states of contained use cases and their scenarios. Scenarioo by default (if not configured otherwise) only supports "failed" and "success" as known status values. All other status values are treated as not successful and displayed in orange.
-* Optional values:
-  * `details`, `Object`: Whatever additional information you would like to attach to the build object.
+Field Name | Type | Description
+---|:---:|---
+name        | `string`  | **Required.** Use something that reflects the uniqueness and order of your builds, e.g. the timestamp or a build sequence number.
+date        | `date`    | Start date / time of the build (as a timestamp) --> TODO: Specify exact format
+revision    | `string`  | the revision number in your version control system (e.g. changeset number).
+status      | `string`  | Whether the build was a `success` or `failed`. If the status is left empty, Scenarioo will calculate it from the states of contained use cases and their scenarios. Scenarioo by default (if not configured otherwise) only supports "failed" and "success" as known status values. All other status values are treated as not successful and displayed in orange.
+details     | <a href="#">Details</a> | Whatever additional information you would like to attach to the build object.
+
 
 ### Example build.json file
 
@@ -114,12 +114,39 @@ You probably want to run a regular build for generating the documentation data. 
 
 TODO: Add specification
 
+### Fields
+
+Name | Type | Description
+---|:---:|---
+name        | `string`  | **Required.** Name for the use case.
+description | `string`  | A longer description to describe the use case.
+status      | `string`  | Whether the use case was a `success` or `failed`. If the status is left empty, Scenarioo will calculate it from the states of contained scenarios. Scenarioo by default (if not configured otherwise) only supports "failed" and "success" as known status values. All other status values are treated as not successful and displayed in orange.
+details     | <a href="#">Details</a> | Whatever additional information you would like to attach to the usecase object.
+
+
 
 ### Scenario Folder and scenario.json
 
 TODO: Add specification
 
+### Fields
+
+Name | Type | Description
+---|:---:|---
+name        | `string`  | **Required.** Name for the scenario.
+description | `string`  | A longer description to describe the scenario.
+status      | `string`  | Whether the scenario is a `success` or `failed`. Scenarioo by default (if not configured otherwise) only supports "failed" and "success" as known status values. All other status values are treated as not successful and displayed in orange.
+details     | <a href="#">Details</a> | Whatever additional information you would like to attach to the usecase object.
+
 
 ### Steps of a scenarioo and <stepnumber>.json
 
 TODO: Add specification
+
+### Fields
+
+Name | Type | Description
+---|:---:|---
+page        | <a href="#">Page</a>  | Page Information
+screenAnnotation | [<a href="#">Screen Annotation</a>] | A screen annotation object.
+
