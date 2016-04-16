@@ -9,6 +9,7 @@ WARNING: This file format is not used in current versions of Scenarioo 2.x. It i
 
 ![Scenarioo Domain Model](images/draw.io/Scenarioo Domain Model.png)
 
+For attaching more generic application specific meta data to this model please see [Scenarioo Object Model](scenarioo_object_model.md)
 
 ## General rules
 
@@ -29,13 +30,22 @@ All fields that are used as identifiers and therefore can be part of a URL have 
 
 ### <a name="details">Details</a>
 
-A JSON object with no restriction. Two special variants of this type are treated specially be Scenarioo.
+This will be replaced by [`Properties`](scenarioo_object_model.md).
 
-* If any JSON object inside the details field has a `type` and `name` field but no `details` field, it is considered an *Scenarioo object reference*.
-* If any JSON object inside the details field has a `type`, `name` and a `details` field, it is considered a *Scenarioo object".
+```
+
+ // Old proposal
+
+  A JSON object with no restriction. Two special variants of this type are treated specially be Scenarioo.
+
+   * If any JSON object inside the details field has a `type` and `name` field but no `details` field, it is considered an *Scenarioo object reference*.
+   * If any JSON object inside the details field has a `type`, `name` and a `details` field, it is considered a *Scenarioo object".
+
+TODO: Is the absence of the `details` field good enough to distinguish between object references and object details?
+
+```
 
 TODO: Link to the page where the object repository feature is described in detail
-TODO: Is the absence of the `details` field good enough to distinguish between object references and object details?
 
 ### <a name="labels">Labels</a>
 
@@ -299,5 +309,7 @@ TODO: Take spec from https://github.com/scenarioo/scenarioo/issues/149 when the 
 # Changes compared to the previous (pre 3.x) file format
 
 * JSON instead of XML file format
+
+* New format for application specific objects, replacing former `details`, now called `properties`: see (scenarioo_object_model.md)
 
 -> TODO
