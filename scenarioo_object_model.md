@@ -1,7 +1,6 @@
 # New Scenarioo Object Model
 
-> replaces former generic Details data model
-> This is work in progress ... this is only a first draft to discuss further ...
+> this replaces the former generic Details data model
 
 The Scenarioo Object Model allows to add arbitrary application-specific documentation data to any object in the scenarioo model.
 
@@ -9,6 +8,7 @@ Each object in the scenario model has a property `properties` (similar to `detai
 This `properties` basically is an array of entries (with `labelKey`, `value` and optionaly some more meta data information) explained in more details in following sections.
 
 Inside such properties you can even store more complex objects of complex data structure, that have a `type` and  which can again contain `properties`. 
+
 Similar to all scenarioo's explicit object types (useCase, scenario, step, page, ...) also your own application-specific type of objects can contain again sub items in an optional field called `ìtems`.
 Using `ìtems` you can model objects who contain again a list of sub objects, the same as e.g. a useCase in the scenarioo domain model, that has scenarios as sub items.
 
@@ -48,7 +48,7 @@ If the distinction between `properties`  and `items` is not understandable for y
 
 ## Model Documenation
 
-Each entry in a `properties` or `items` array is a JSON object that can have following fields (=json properties):
+Each entry in a `properties` or `items` array is a object of type `DocuObject` that can have following fields (=json properties):
 
 Name | Type | Description
 :---|:---|:---
@@ -71,32 +71,35 @@ See [Example JSON of a scenario with object model data](scenarioo_object_model_e
 ## Open Points / To be defined
 
  * What characters should we allow in ID fields?
-    * I think since it is a breaking release anyway, we can live with the fact that all old URLs will not be valid anymore on next release (or @adiherzog what do you think?)
-       * therefore I propose to only allow characters that can be used without problems in URLs without encoding them for `id` fields.
+    * Since it is a breaking release anyway, we can live with the fact that all old URLs will not be valid anymore on next release
+       * Therefore we will only allow characters that can be used without problems in URLs without encoding them for `id` fields: A-Za-z0-9-_ that's it.
+       * all other characters will have to be sanitized by the libraries somehow (to be defined).
+       * To still support all old URLs, we could introduce a redirect filter for those requests where unallowed characters are in the requests
         
  * To be consistent, also the usual objects should now get an `ìtems` field, shouldn't they?
-       * No, I think this is not needed, because the existing explicit object types of scenarioo allready have explicit modeled sub items (useCase has scenarios, scenario has steps, etc.)
+       * No, not needed, because the existing explicit object types of scenarioo allready have explicit modeled sub items (useCase has scenarios, scenario has steps, etc.)
        
  * Do we allow to have properties without a `labelKey`? 
-       * I propose not.
+       * No
+       * But items can have objects without `labelKey`.
  
  * Do `labelKey` values have to be unique for one object? 
-       * I propose yes.
+       * Yes, they should (if not, it will work anyway, but referencing an object through the label key will take anyone).
  
  * Do we allow to have entries in `îtems` without a `labelKey`? 
-       * I propose yes (data migration will become impossible otherwise).
+       * Yes (data migration will become impossible otherwise).
  
  * Would numeric values and units be a good idea? see example for service call duration where building statistic could become interesting once.
-       * Proposal: only introduce as soon as we need it
+       * For now not, we could introduce it, if we really need it
     
  * Should generic object items also have a field `labels` to add labels?
-       * I think yes.
+       * We might add that later, for now not (because client does not yet support it)
+       * Same for build and branch
  
 ## Design Decissions
 
-> Feel free to use this section to give feedback or discuss ... This is not finalized yet, it is just a draft of a proposal ...
-> I try to summarize a little bit, why the current design is as it is and what arguments we discussed.
-> Also I did not note all the arguments we discussed at the meeting, so feel free to add more arguments or more împortant things we decidced. Thank you!
+> this section tries to summarize a little bit, why the current design is as it is and what arguments we discussed.
+> We did not note all the arguments we discussed at the meeting, so feel free to add more arguments or more împortant things we decidced, in case you remember. Thank you!
 
 1. What were the major architectural drivers for the new design?
 
@@ -137,3 +140,4 @@ See [Example JSON of a scenario with object model data](scenarioo_object_model_e
     * I tried to document all discussed arguments and important design decissions
     * the rest should still be as discussed, feel free to give feedback on issue #2 or directly contribute to this model by modifying this file here.
 * 27.04.2016 presentation at the dev team meeting, the model is considered finalized, and will be implemented as described here
+* 09.05.2016 clean up of this docu page, according our further discussions. Model is considered finalized.
