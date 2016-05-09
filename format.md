@@ -90,7 +90,6 @@ Some simple examples of valid `DocuObject`s:
  
 For more detailed description and more complex examples, see [`Scenarioo Object Model`](scenarioo_object_model.md).
  
-
 ## File System Structure
 
 TODO: Draw a new diagram using draw.io, also commit the draw.io source of the diagram as well as the png image.
@@ -105,7 +104,6 @@ Scenarioo documentation data is stored in a certain structure of folders and fil
 
 This is the folder where all the Scenarioo documentation files and folders are stored. Typically it contains a number of branch folders.
 
-
 ### Branch Folder and branch.json
 
 #### Purpose
@@ -115,16 +113,19 @@ Scenarioo allows to document several branches of your applications. You can use 
 #### Rules
 
 * A folder in the *documentation root* is a *branch folder* if and only if it also contains a valid `branch.json` file.
-* The folder name of a *branch folder* must be the URL encoded version of the `name` value in the `branch.json`. If this is not the case, the folder is not considered a *branch folder*. 
+* The folder name of a *branch folder* must be the URL encoded version of the `name` value in the `branch.json`. If this is not the case, the folder is not considered a valid *branch folder*. 
 * It is allowed to have other folders that are not *branch folders* in the *documentation root*. They are ignored by Scenarioo.
 
 #### Fields
 
-Name | Type | Description
+A `branch.json` can have following fields to describe a branch:
+
+Name | Type / Format | Description  | Rules
 :---|:---|:---
-name        | <a href="#identifier_string">Identifier-String</a>  | **Required.** Use something that identifies your branch or your software version, e.g. "Release 2014-10-25", "Version 3.1", "trunk" or "123-some-super-new-feature".
-description | <a href="#string">String</a>  | A short description of the purpose of this branch, what version of your application does this branch contain or document.
-details     | <a href="#details">Details</a> | Whatever additional information you would like to attach to the branch object.
+name        | <a href="#identifier_string">String</a>  | Display  for this branch. Use something that identifies your branch or your software version, e.g. "Release 2014-10-25", "Version 3.1", "trunk" or "123-some-super-new-feature". | Required
+id          | <a href="#identifier_string">Identifier-String</a> | Identifier used for this object, if not set explicitly it is calculated from `name` by replacing unallowed characters | Optional
+description | <a href="#string">String</a>  | A short description of the purpose of this branch, what version of your application does this branch contain or document. | Optional
+properties  | Array of <a href="#DocuObject">DocuObject</a> | For additional properties to add arbitrary appplication specific docu data | Optional
 
 #### Example branch.json file
 
