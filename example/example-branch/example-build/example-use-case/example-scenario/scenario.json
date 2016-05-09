@@ -2,7 +2,7 @@
   "id": "example-scenario",
   "name": "example scenario",
   "description": "an optional description",
-  "label": ["example-label-1", "example-label-2"],
+  "labels": ["example-label-1", "example-label-2"],
   "status": "success",
   "properties": [
     {

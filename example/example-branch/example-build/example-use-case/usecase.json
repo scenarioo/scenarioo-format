@@ -2,7 +2,7 @@
   "id": "example-use-case",
   "name": "example use case",
   "description": "an optional description text",
-  "label": ["example-label-1", "example-label-2"],
+  "labels": ["example-label-1", "example-label-2"],
   "status": "success",
   "properties": [
     {
