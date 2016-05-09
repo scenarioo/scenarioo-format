@@ -1,0 +1,36 @@
+{
+  "id": "example-build",
+  "name": "example build",
+  "description": "an optional description text",
+  "revision": "1.0.1#5ba891b",
+  "date": "2016-05-01T20:04:13.084Z",
+  "status": "failed",
+  "propoerties": [
+    {
+      "labelKey": "simpleProperty",
+      "value": "some value"
+    },
+    {
+      "labelKey": "complexObjectProperty",
+      "value": "Complex Object",
+      "id": "complex-object-1",
+      "type": "ComplexObject",
+      "properties": [
+        {
+          "labelKey": "objectProperty",
+          "value": "any value"
+        }
+      ],
+      "items": [
+        {
+          "value": "Sub Object A",
+          "type": "ComplexObject"
+        },
+        {
+          "value": "Sub Object B",
+          "type": "ComplexObject"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "index": 0,
+  "id": "",
+  "title": "My Step Title",
+  "status": "success",
+  "page": {
+    "name": "example/page.html",
+    "id": "example-page-html",
+    "properties": [
+      {
+        "labelKey": "simpleProperty",
+        "value": "some value"
+      },
+      {
+        "labelKey": "complexObjectProperty",
+        "value": "Complex Object",
+        "id": "complex-object-1",
+        "type": "ComplexObject",
+        "properties": [
+          {
+            "labelKey": "objectProperty",
+            "value": "any value"
+          }
+        ],
+        "items": [
+          {
+            "value": "Sub Object A",
+            "type": "ComplexObject"
+          },
+          {
+            "value": "Sub Object B",
+            "type": "ComplexObject"
+          }
+        ]
+      }
+    ],
+    "labels": [
+      "page-label-1"
+    ]
+  },
+  "visibleText": "just some dummy html code",
+  "screenAnnotations": [
+    {
+      "style": "CLICK",
+      "clickAction": "TO_NEXT_STEP",
+      "region": {
+        "x": 0,
+        "y": 0,
+        "width": 200,
+        "height": 100
+      },
+      "properties": [
+        {
+          "labelKey": "simpleProperty",
+          "value": "some value"
+        },
+        {
+          "labelKey": "complexObjectProperty",
+          "value": "Complex Object",
+          "id": "complex-object-1",
+          "type": "ComplexObject",
+          "properties": [
+            {
+              "labelKey": "objectProperty",
+              "value": "any value"
+            }
+          ],
+          "items": [
+            {
+              "value": "Sub Object A",
+              "type": "ComplexObject"
+            },
+            {
+              "value": "Sub Object B",
+              "type": "ComplexObject"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "style": "CLICK",
+      "clickAction": "TO_URL",
+      "clickActionUrl": "http://blabla.com/blubbi",
+      "region": {
+        "x": 0,
+        "y": 0,
+        "width": 200,
+        "height": 100
+      }
+    }
+  ],
+  "labels": [
+    "example-step-label-1",
+    "example-step-label-2"
+  ],
+  "properties": [
+    {
+      "labelKey": "url",
+      "value": "http://www.my-application.ch/example/page.html?id=12"
+    }
+  ],
+  "propertyGroups": [
+    {
+      "labelKey": "Proprty Group 1",
+      "properties": [
+        {
+          "labelKey": "simpleProperty",
+          "value": "some value"
+        },
+        {
+          "labelKey": "complexObjectProperty",
+          "value": "Complex Object",
+          "id": "complex-object-1",
+          "type": "ComplexObject",
+          "properties": [
+            {
+              "labelKey": "objectProperty",
+              "value": "any value"
+            }
+          ],
+          "items": [
+            {
+              "value": "Sub Object A",
+              "type": "ComplexObject"
+            },
+            {
+              "value": "Sub Object B",
+              "type": "ComplexObject"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "id": "example-use-case",
+  "name": "example use case",
+  "description": "an optional description text",
+  "label": ["example-label-1", "example-label-2"],
+  "status": "success",
+  "properties": [
+    {
+      "labelKey": "simpleProperty",
+      "value": "some value"
+    },
+    {
+      "labelKey": "complexObjectProperty",
+      "value": "Complex Object",
+      "id": "complex-object-1",
+      "type": "ComplexObject",
+      "properties": [
+        {
+          "labelKey": "objectProperty",
+          "value": "any value"
+        }
+      ],
+      "items": [
+        {
+          "value": "Sub Object A",
+          "type": "ComplexObject"
+        },
+        {
+          "value": "Sub Object B",
+          "type": "ComplexObject"
+        }
+      ]
+    }
+  ]
+}
