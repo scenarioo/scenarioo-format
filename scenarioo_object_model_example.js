@@ -2,13 +2,13 @@ var exampleScenario = {
 
     name: 'the name of this scenario/can contain slashes but the id not',
 
-    id: 'the_name_of_this_scenario_can_contain_slashes_but_the_id_not',
+    id: 'the-name-of-this-scenario-can-contain-slashes-but-the-id-not',
 
     description: 'Additional textual description',
 
     labels: ['happy', 'new-model-is-easy', 'new-model-is-cool'],
 
-    status: "failed",
+    status: "success",
 
     properties: [
 
