@@ -48,22 +48,13 @@ If the distinction between `properties`  and `items` is not understandable for y
 
 ## Model Documenation
 
-Each entry in a `properties` or `items` array is a object of type `DocuObject` that can have following fields (=json properties):
-
-Name | Type | Description
-:---|:---|:---
-labelKey | String  | (Required. for properties, for items optional, must be unique inside the parent object for all its properties to identify this property) Kind of the identifier (key) and the label text for the property or the relation to an item. Can be used for configuration purpose, e.g. to select some special property values to display in some special views e.g. as table columns. And this field is special since it does not realy belong to the information value object, meaning, that same object value, even typed value, can occur with multiple different label keys of course.
-value | String | display text to display as value, optional but recommended for most properties. For objects with a `type` at least one of `value` and `id` must be provided and should be a unique identifier for all objects of same type.
-type | Identifier-String | (optional) a type identifier to group different type of objects, examples: UiElement, PageObject, Service, Feature, Story, ... Whatever types make sense to be defined in your application. Scenarioo Viewer can display typed objects in additional search tabs, to see all objects of one or several types in one view to easily search for them."
-id | Identifier-String | (only for object's having a type field or as well for other typed concrete scenarioo objects, optional) A unique identifier for this typed object that is not allowed to contain some special characters (/, \). If not set explicitly the libraries will calculate this identifier for you from the object's value by sanitizing unallowed characters. This id will not be displayed but will be used in URLs and internaly for identification and comparison of objects and for storing the objects. It is recommended to keep this field unchanged for object's when they change their value (=display text), to keep trackable how this documented objects evolve between different builds.
-properties | array | (optional) can contain again properties of same kind for more complex structured data objects
-items | array | (optional) for objects that contain other objects as items (e.g. same as usecase contains scenarios). can contain same type of objects as properties can have, but `labelKey` is not required here.  
-
+Each entry in a `properties` or `items` array is a object of type `DocuObject` that can have the properties as described in details under <a href="format.md#DocuObject">DocuObject</a>.
+  
 ## Example
 
 **Specification by Example:**
 
-The following example demonstrates how this model can be used to add concrete different kind of application-specific data to a scenario in your scenarioo documentation.
+The following extensive example demonstrates how this model can be used to add concrete different kind of application-specific data to a scenario in your scenarioo documentation.
 (same is of course also possible on a branch, build, useCase, step, and page)
  
 See [Example JSON of a scenario with object model data](scenarioo_object_model_example.js) 

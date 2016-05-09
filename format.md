@@ -4,61 +4,92 @@ This is the specification of the Scenarioo documentation format. To find out mor
 
 WARNING: This file format is not used in current versions of Scenarioo 2.x. It is the future format for Scenarioo 3.x. For a reference of the Scenarioo 2.x format, please have a look in our [Wiki](https://github.com/scenarioo/scenarioo/wiki/Scenarioo-Writer-Documentation-Format).
 
+## Domain Model Overview
 
-## Domain model
+The following diagram gives a rough overview about the major entities in the scenarioo documentation model:
 
 ![Scenarioo Domain Model](images/draw.io/Scenarioo Domain Model.png)
 
-For attaching more generic application specific meta data to this model please see [Scenarioo Object Model](scenarioo_object_model.md)
 
 ## General rules
 
-* Whenever we talk about URL encoding here, we use the `+` sign to encode a space character instead of `%20`.
 * For a description of the JSON format, see http://json.org
-* [Labels](Labels) -> TODO: Specify here
+* TODO to be defined more?
 
 
-## Field types
+## Data Types
 
 ### <a name="string">String</a>
 
-A regular string as defined by the JSON format.
+A regular string as defined by the JSON format, all characters in UTF-8 are allowed.
 
-### <a name="string_identifier">String (identifier)</a>
+### <a name="identifier_string">Identifier-Sring</a>
 
-All fields that are used as identifiers and therefore can be part of a URL have this type. It is a standard JSON string except that the two characters `/` and `\` are not allowed. `\` as an escape character is allowed.
+All fields that are used as identifiers and therefore can be part of a URL have this type, and in this kind of string only usual characters are allowed, no spaces, no slashes and not other special characters, except for `-` and `_`.
 
-### <a name="details">Details</a>
+Regexp: `[A-Za-z_0-9\-]+`
 
-This will be replaced by [`Properties`](scenarioo_object_model.md).
+### <a name="Datetime">Datetime</a>
 
-```
-
- // Old proposal
-
-  A JSON object with no restriction. Two special variants of this type are treated specially be Scenarioo.
-
-   * If any JSON object inside the details field has a `type` and `name` field but no `details` field, it is considered an *Scenarioo object reference*.
-   * If any JSON object inside the details field has a `type`, `name` and a `details` field, it is considered a *Scenarioo object".
-
-TODO: Is the absence of the `details` field good enough to distinguish between object references and object details?
-
-```
-
-TODO: Link to the page where the object repository feature is described in detail
+The `Datetime` format used in scenarioo is a usual ISO data time format, as specified here: https://en.wikipedia.org/wiki/ISO_8601
 
 ### <a name="labels">Labels</a>
 
-The value of a labels field is an array of strings. Each string has to satisfy the regular expression `^[ a-zA-Z0-9_-]+$`.
+The value of a labels field is an array of labels, each label is an <a href="#identifier_string">Identifier-String</a>.
 
-### <a name="labels">Date</a>
+### <a name="DocuObject">DocuObject</a>
 
-TODO: Define Date format.
+A `DocuObject` is an object that describes any additional generic data value or even more complex data objects.
 
-### <a name="integer">Integer</a>
+`DocuObject`s are very powerful and can be used to model arbitrary application specific data structures.
 
-A numeric value that has no floating point part and is not negative.
+Each `DocuObject` consists of following fields:
 
+Name | Type / Format | Description | Rules
+:---|:---|:---
+labelKey | <a href="#string">String</a> | Kind of the identifier (key) and the label text for the property or the relation to an item. Can be used for configuration purpose, e.g. to select some special property values to display in some special views e.g. as table columns. And this field is special since it does not realy belong to the information value object, meaning, that same object value, even typed value, can occur with multiple different label keys of course. | For objects in `properties` this is required, for other objects as in `items` it is optional, should be unique inside the parent object for all its properties to identify this property. 
+value | <a href="#string">String</a> | display text to display as value | Required
+type | <a href="#identifier_string">Identifier-String</a> | A type identifier to group different type of objects, examples: UiElement, PageObject, Service, Feature, Story, ... Whatever types make sense to be defined in your application. Scenarioo Viewer can display typed objects in additional search tabs, to see all objects of one or several types in one view to easily search for them. | Optional
+id | <a href="#identifier_string">Identifier-String</a> | A unique identifier for this typed object that is not allowed to contain some special characters. If not set explicitly the libraries will calculate this identifier for you from the object's value by sanitizing unallowed characters. This id will not be displayed but will be used in URLs and internaly for identification and comparison of objects and for storing the objects. It is recommended to keep this field unchanged for object's when they change their value (=display text), to keep trackable how this documented objects evolve between different builds. | Optional
+properties | Array of <a href="#DocuObject">DocuObject</a> | For complex objects having again `DocuObject`s for its attribute values | Optional
+items | Array of <a href="#DocuObject">DocuObject</a> | For objects that contain other objects as items (e.g. same as a usecase that contains scenarios), those objects can contain again `DocuObject`s  as its items. `labelKey` is not required inside this objects contained here. | Optional
+
+Some simple examples of valid `DocuObject`s:
+
+```
+
+        /* Example 1: A simple key value property */
+        {            
+            labelKey: "simpleStringValue",
+            value: "a textual information"
+        },
+
+        /* Example 2: More complex description of a typed object (with nested DocuObjects as properties) */
+        {
+            labelKey: "exception",
+            value: "Scenario failed: Element not found",
+            type: "Exception",
+            id: "ElementNotFoundException",
+            properties: [
+                {
+                    labelKey: "source",
+                    value: "expect(element.isPresent()).toBe(true)"
+                },
+                {
+                    labelKey: "exceptionMessage",
+                    value: "Failed: No element found using locator: By.cssSelector('div#myUndefinedId')"
+                },
+                {
+                    labelKey: "stackTrace",
+                    value: "... put the full stack trace here ..."
+                }                
+            ]
+        }
+
+```
+ 
+For more detailed description and more complex examples, see [`Scenarioo Object Model`](scenarioo_object_model.md).
+ 
 
 ## File System Structure
 
@@ -91,7 +122,7 @@ Scenarioo allows to document several branches of your applications. You can use 
 
 Name | Type | Description
 :---|:---|:---
-name        | <a href="#string_identifier">String (identifier)</a>  | **Required.** Use something that identifies your branch or your software version, e.g. "Release 2014-10-25", "Version 3.1", "trunk" or "123-some-super-new-feature".
+name        | <a href="#identifier_string">Identifier-String</a>  | **Required.** Use something that identifies your branch or your software version, e.g. "Release 2014-10-25", "Version 3.1", "trunk" or "123-some-super-new-feature".
 description | <a href="#string">String</a>  | A short description of the purpose of this branch, what version of your application does this branch contain or document.
 details     | <a href="#details">Details</a> | Whatever additional information you would like to attach to the branch object.
 
@@ -127,8 +158,8 @@ You probably want to run a regular build for generating the documentation data. 
 
 Name | Type | Description
 :---|:---|:---
-name        | <a href="#string_identifier">String (identifier)</a> | **Required.** Use something that reflects the uniqueness and order of your builds, e.g. the timestamp or a build sequence number.
-date        | <a href="#date">Date</a>    | Start date / time of the build (as a timestamp) --> TODO: Specify exact format
+name        | <a href="#identifier_string">Identifier-String</a> | **Required.** Use something that reflects the uniqueness and order of your builds, e.g. the timestamp or a build sequence number.
+date        | <a href="#date">Datetime</a>    | Start date / time of the build (as a timestamp) --> TODO: Specify exact format
 revision    | <a href="#string">String</a>  | the revision number in your version control system (e.g. changeset number).
 status      | <a href="#string">String</a>  | Whether the build was a `success` or `failed`. If the status is left empty, Scenarioo will calculate it from the states of contained use cases and their scenarios. Scenarioo by default (if not configured otherwise) only supports "failed" and "success" as known status values. All other status values are treated as not successful and displayed in orange.
 details     | <a href="#details">Details</a> | Whatever additional information you would like to attach to the build object.
@@ -166,7 +197,7 @@ The documentation is structured into use cases. These use cases should whenever 
   
 Name | Type | Description
 :---|:---|:---
-name        | <a href="#string_identifier">String (identifier)</a>  | **Required.** Use case name, e.g. "log in" or "change profile settings". Keep this short and use the description field for more information.
+name        | <a href="#identifier_string">Identifier-String</a>  | **Required.** Use case name, e.g. "log in" or "change profile settings". Keep this short and use the description field for more information.
 description | <a href="#string">String</a>  | This should give a short description of the use case from a business perspective. All the use case descriptions together should give a good high level overview of the functionality your software offers.
 status      | <a href="#string">String</a>  | Whether the use case was a "success" or "failed". If not set explicitly Scenarioo will calculate it later from all contained scenarios (it will assume "success" if all scenarios inside the use case are a "success")
 details     | <a href="#details">Details</a> | Whatever additional information you would like to attach to the usecase object.
@@ -204,7 +235,7 @@ A scenario documents a certain path that is possible to perform a use case. For 
 
 Name | Type | Description
 :---|:---|:---
-name        | <a href="#string_identifier">String (identifier)</a>  | **Required.** Scenario name, e.g. "successful log in"
+name        | <a href="#identifier_string">Identifier-String</a>  | **Required.** Scenario name, e.g. "successful log in"
 description | <a href="#string">String</a>  | Here you can add further information about what's special in a scenario and add further documentation about the logic used in the scenario. E.g. "A successful login is only possible if the account is already activated.".
 status      | <a href="#string">String</a>  | Whether the scenario was successful. A scenario usually corresponds to one test case. Therefore this just says whether the test case was green. Scenarioo by default (if not configured otherwise) only supports "failed" and "success" as known status values.
 details     | <a href="#details">Details</a> | Whatever additional information you would like to attach to the usecase object.
@@ -265,7 +296,7 @@ An object with these fields:
 
 Name | Type | Description
 :---|:---|:---
-name        | <a href="#string_identifier">String (identifier)</a>  | Name of the page
+name        | <a href="#identifier_string">Identifier-String</a>  | Name of the page
 details | <a href="#details">Details</a> | Metadata of the page
 labels | <a href="#labels">Labels</a> | Labels for the page
 
