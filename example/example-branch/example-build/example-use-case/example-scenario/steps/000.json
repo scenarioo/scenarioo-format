@@ -90,10 +90,7 @@
       }
     }
   ],
-  "labels": [
-    "example-step-label-1",
-    "example-step-label-2"
-  ],
+  "labels": [ "example-label-1", "example-label-2"],
   "properties": [
     {
       "labelKey": "url",
