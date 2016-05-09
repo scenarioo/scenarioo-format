@@ -1,0 +1,5 @@
+{
+  "id": "example-branch-minimal",
+  "name": "example branch minimal",
+  "description": "This additional example branch contains on all objects only the minimal required fields. This is to test that the libraries only require what is realy required and to test that the server not expect more"
+}
