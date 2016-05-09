@@ -5,7 +5,7 @@
   "revision": "1.0.1#5ba891b",
   "date": "2016-05-01T20:04:13.000Z",
   "status": "success",
-  "propoerties": [
+  "properties": [
     {
       "labelKey": "simpleProperty",
       "value": "some value"
