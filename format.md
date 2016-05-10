@@ -18,7 +18,7 @@ The following diagram gives a rough overview about the major entities in the sce
 
 ## Data Types
 
-### <a name="string">String</a>
+### <a name="String">String</a>
 
 A regular string as defined by the JSON format, all characters in UTF-8 are allowed.
 
@@ -48,12 +48,12 @@ Each `DocuObject` consists of following fields:
 
 Name | Type / Format | Description | Rules
 :---|:---|:---|:---
-labelKey | [String](#string) | Kind of the identifier (key) and the label text for the property or the relation to an item. Can be used for configuration purpose, e.g. to select some special property values to display in some special views e.g. as table columns. And this field is special since it does not realy belong to the information value object, meaning, that same object value, even typed value, can occur with multiple different label keys of course. | For objects in `properties` this is required, for other objects as in `items` it is optional, should be unique inside the parent object for all its properties to identify this property.
-value | <a href="#string">String</a> | display text to display as value | Required
-type | <a href="#identifier_string">Identifier-String</a> | A type identifier to group different type of objects, examples: UiElement, PageObject, Service, Feature, Story, ... Whatever types make sense to be defined in your application. Scenarioo Viewer can display typed objects in additional search tabs, to see all objects of one or several types in one view to easily search for them. | Optional
-id | <a href="#identifier_string">Identifier-String</a> | A unique identifier for this typed object that is not allowed to contain some special characters. If not set explicitly the libraries will calculate this identifier for you from the object's value by sanitizing unallowed characters. This id will not be displayed but will be used in URLs and internaly for identification and comparison of objects and for storing the objects. It is recommended to keep this field unchanged for object's when they change their value (=display text), to keep trackable how this documented objects evolve between different builds. | Optional
-properties | Array of <a href="#DocuObject">DocuObject</a> | For complex objects having again `DocuObject`s for its attribute values | Optional
-items | Array of <a href="#DocuObject">DocuObject</a> | For objects that contain other objects as items (e.g. same as a usecase that contains scenarios), those objects can contain again `DocuObject`s  as its items. `labelKey` is not required inside this objects contained here. | Optional
+labelKey | [String](#String) | Kind of the identifier (key) and the label text for the property or the relation to an item. Can be used for configuration purpose, e.g. to select some special property values to display in some special views e.g. as table columns. And this field is special since it does not realy belong to the information value object, meaning, that same object value, even typed value, can occur with multiple different label keys of course. | For objects in `properties` this is required, for other objects as in `items` it is optional, should be unique inside the parent object for all its properties to identify this property.
+value | [String](#String) | display text to display as value | Required
+type | [Identifier-String](#identifier_string) | A type identifier to group different type of objects, examples: UiElement, PageObject, Service, Feature, Story, ... Whatever types make sense to be defined in your application. Scenarioo Viewer can display typed objects in additional search tabs, to see all objects of one or several types in one view to easily search for them. | Optional
+id | [Identifier-String](#identifier_string) | A unique identifier for this typed object that is not allowed to contain some special characters. If not set explicitly the libraries will calculate this identifier for you from the object's value by sanitizing unallowed characters. This id will not be displayed but will be used in URLs and internaly for identification and comparison of objects and for storing the objects. It is recommended to keep this field unchanged for object's when they change their value (=display text), to keep trackable how this documented objects evolve between different builds. | Optional
+properties | Array of [DocuObject](#DocuObject) | For complex objects having again `DocuObject`s for its attribute values | Optional
+items | Array of [DocuObject](#DocuObject) | For objects that contain other objects as items (e.g. same as a usecase that contains scenarios), those objects can contain again `DocuObject`s  as its items. `labelKey` is not required inside this objects contained here. | Optional
 
 Some simple examples of valid `DocuObject`s:
 
@@ -105,7 +105,7 @@ Scenarioo documentation data is stored in a certain structure of folders and fil
 
 This is the folder where all the Scenarioo documentation files and folders are stored. Typically it contains a number of branch folders.
 
-### Branch Folder and branch.json
+### Branches
 
 #### Purpose
 
@@ -123,10 +123,10 @@ A `branch.json` can have following fields to describe a branch:
 
 Name | Type / Format | Description  | Rules
 :---|:---|:---
-name        | <a href="#identifier_string">String</a>  | Display  for this branch. Use something that identifies your branch or your software version, e.g. "Release 2014-10-25", "Version 3.1", "trunk" or "123-some-super-new-feature". | Required
-id          | <a href="#identifier_string">Identifier-String</a> | Identifier used for this object, if not set explicitly it is calculated from `name` by replacing unallowed characters | Optional
-description | <a href="#string">String</a>  | A short description of the purpose of this branch, what version of your application does this branch contain or document. | Optional
-properties  | Array of <a href="#DocuObject">DocuObject</a> | For additional properties to add arbitrary appplication specific docu data | Optional
+name        | [String](#String)  | Display  for this branch. Use something that identifies your branch or your software version, e.g. "Release 2014-10-25", "Version 3.1", "trunk" or "123-some-super-new-feature". | Required
+id          | [Identifier-String](#identifier_string) | Identifier used for this object, if not set explicitly it is calculated from `name` by replacing unallowed characters | Optional
+description | [String](#String)  | A short description of the purpose of this branch, what version of your application does this branch contain or document. | Optional
+properties  | Array of [DocuObject](#DocuObject) | For additional properties to add arbitrary appplication specific docu data | Optional
 
 #### Example branch.json file
 
@@ -144,7 +144,7 @@ properties  | Array of <a href="#DocuObject">DocuObject</a> | For additional pro
 ```
 
 
-### Build Folder and build.json
+### Builds
 
 #### Purpose
 
@@ -160,11 +160,11 @@ You probably want to run a regular build for generating the documentation data. 
 
 Name | Type | Description
 :---|:---|:---
-name        | <a href="#identifier_string">Identifier-String</a> | **Required.** Use something that reflects the uniqueness and order of your builds, e.g. the timestamp or a build sequence number.
-date        | <a href="#date">Datetime</a>    | Start date / time of the build (as a timestamp) --> TODO: Specify exact format
-revision    | <a href="#string">String</a>  | the revision number in your version control system (e.g. changeset number).
-status      | <a href="#string">String</a>  | Whether the build was a `success` or `failed`. If the status is left empty, Scenarioo will calculate it from the states of contained use cases and their scenarios. Scenarioo by default (if not configured otherwise) only supports "failed" and "success" as known status values. All other status values are treated as not successful and displayed in orange.
-details     | <a href="#details">Details</a> | Whatever additional information you would like to attach to the build object.
+name        | [Identifier-String](#identifier_string) | **Required.** Use something that reflects the uniqueness and order of your builds, e.g. the timestamp or a build sequence number.
+date        | [Datetime](#Datetime)    | Start date / time of the build (as a timestamp) --> TODO: Specify exact format
+revision    | [String](#String)  | the revision number in your version control system (e.g. changeset number).
+status      | [String](#String)  | Whether the build was a `success` or `failed`. If the status is left empty, Scenarioo will calculate it from the states of contained use cases and their scenarios. Scenarioo by default (if not configured otherwise) only supports "failed" and "success" as known status values. All other status values are treated as not successful and displayed in orange.
+properties     | Array of [DocuObject](#DocuObject) | Whatever additional information you would like to attach to the build object.
 
 
 #### Example build.json file
@@ -175,7 +175,7 @@ details     | <a href="#details">Details</a> | Whatever additional information y
 	"revision" : "1290FE2",
 	"date" : "2014-01-20T00:00:00+01:00",
 	"status" : "success",
-	"details" {
+	"properties" {
 		"build trigger" : "manual",
 		"build run duration" : "14 minutes"
 	}
@@ -199,11 +199,11 @@ The documentation is structured into use cases. These use cases should whenever 
   
 Name | Type | Description
 :---|:---|:---
-name        | <a href="#identifier_string">Identifier-String</a>  | **Required.** Use case name, e.g. "log in" or "change profile settings". Keep this short and use the description field for more information.
-description | <a href="#string">String</a>  | This should give a short description of the use case from a business perspective. All the use case descriptions together should give a good high level overview of the functionality your software offers.
-status      | <a href="#string">String</a>  | Whether the use case was a "success" or "failed". If not set explicitly Scenarioo will calculate it later from all contained scenarios (it will assume "success" if all scenarios inside the use case are a "success")
-details     | <a href="#details">Details</a> | Whatever additional information you would like to attach to the usecase object.
-labels      | <a href="#labels">Labels</a> | Add some info that is interesting on the use case level. E.g. you could label all use cases with "admin" that can only be performed with the admin role.
+name        | [Identifier-String](#identifier_string)  | **Required.** Use case name, e.g. "log in" or "change profile settings". Keep this short and use the description field for more information.
+description | [String](#String)  | This should give a short description of the use case from a business perspective. All the use case descriptions together should give a good high level overview of the functionality your software offers.
+status      | [String](#String)  | Whether the use case was a "success" or "failed". If not set explicitly Scenarioo will calculate it later from all contained scenarios (it will assume "success" if all scenarios inside the use case are a "success")
+properties     | Array of [DocuObject](#DocuObject) | Whatever additional information you would like to attach to the usecase object.
+labels      | [Labels](#Labels) | Add some info that is interesting on the use case level. E.g. you could label all use cases with "admin" that can only be performed with the admin role.
 
 #### Example usecase.json file
 
@@ -211,7 +211,7 @@ labels      | <a href="#labels">Labels</a> | Add some info that is interesting o
 {
 	"name" : "Find Article",
 	"description" : "User wants to find a Wikipedia article page about a certain topic",
-	"details" : {
+	"properties" : {
 		"Webtest Class" : "org.wikipedia.webtests.FindFindArticleUITest"
 	},
 	"labels" : [
@@ -237,11 +237,11 @@ A scenario documents a certain path that is possible to perform a use case. For 
 
 Name | Type | Description
 :---|:---|:---
-name        | <a href="#identifier_string">Identifier-String</a>  | **Required.** Scenario name, e.g. "successful log in"
-description | <a href="#string">String</a>  | Here you can add further information about what's special in a scenario and add further documentation about the logic used in the scenario. E.g. "A successful login is only possible if the account is already activated.".
-status      | <a href="#string">String</a>  | Whether the scenario was successful. A scenario usually corresponds to one test case. Therefore this just says whether the test case was green. Scenarioo by default (if not configured otherwise) only supports "failed" and "success" as known status values.
-details     | <a href="#details">Details</a> | Whatever additional information you would like to attach to the usecase object.
-labels      | <a href="#labels">Labels</a>   | Make navigation of scenarios easier, e.g. by labeling scenarios as "happy" (for most important happy path through a use case) or "error" (for error scenarios). Also other cross cutting topics can be put as labels on the scenarios, which makes it easy to find all scenarios concerned with such a specific topic over all use cases.
+name        | [Identifier-String](#identifier_string)  | **Required.** Scenario name, e.g. "successful log in"
+description | [String](#String)  | Here you can add further information about what's special in a scenario and add further documentation about the logic used in the scenario. E.g. "A successful login is only possible if the account is already activated.".
+status      | [String](#String)  | Whether the scenario was successful. A scenario usually corresponds to one test case. Therefore this just says whether the test case was green. Scenarioo by default (if not configured otherwise) only supports "failed" and "success" as known status values.
+properties     | Array of [DocuObject](#DocuObject) | Whatever additional information you would like to attach to the usecase object.
+labels      | [Labels](#Labels)   | Make navigation of scenarios easier, e.g. by labeling scenarios as "happy" (for most important happy path through a use case) or "error" (for error scenarios). Also other cross cutting topics can be put as labels on the scenarios, which makes it easy to find all scenarios concerned with such a specific topic over all use cases.
 
 ### Example scenario.json file
 
@@ -250,7 +250,7 @@ labels      | <a href="#labels">Labels</a>   | Make navigation of scenarios easi
 	"name" : "find_multiple_results",
 	"description" : "User enters some text and finds multiple pages that contain this text.",
 	"status" : "success",
-	"details" : {
+	"properties" : {
 		"User Role" : "not authenticated",
 		"Requirements" : [{
 				"name" : "113 - Search Pages"
@@ -298,9 +298,9 @@ An object with these fields:
 
 Name | Type | Description
 :---|:---|:---
-name        | <a href="#identifier_string">Identifier-String</a>  | Name of the page
-details | <a href="#details">Details</a> | Metadata of the page
-labels | <a href="#labels">Labels</a> | Labels for the page
+name        | [Identifier-String](#identifier_string)  | Name of the page
+properties | Array of [DocuObject](#DocuObject) | Metadata of the page
+labels | [Labels](#Labels) | Labels for the page
 
 #### <a name="#stepDescription">StepDescription</a>
 
@@ -311,11 +311,11 @@ An object with these fields:
 Name | Type | Description
 :---|:---|:---
 index | <a href="#integer">Integer</a>  | The number of the step (sequential number, starting with 0 for first step)
-title | <a href="#string">String</a> | The title that is currently displayed for the screen in the browser window title bar or as a title on the page (this makes it possible to search for texts inside this titles in scenarioo).
-status | <a href="#string">String</a> | Whether the test step "failed" and was a "success".
-screenshotFileName | <a href="#string">String</a> | The name of the step screenshot file inside the `screenshots` directory (usually something like '000.png', where 000 is the index of the step and '.png' the used image format)
-details | <a href="#details">Details</a> | Additional important detail information to describe important properties of a step can be put into this key-value map. This additional information will be displayed in the first section entitled "Step" inside the metadata area on the right side of the step image in the step view. E.g. the current browser URL is a good candidate to store here as a property with name 'URL'. It is recommended to only put the most important properties (that logically belong to the top most metadata section "Step") into this details object. For more detailed metadata about a step (that you do not want to see in the top metadata section for a step), you should better use `metadata.details` instead, where you can define additional sections for metadata of a step.
-labels | <a href="#labels">Labels</a> | Labels for the page
+title | [String](#String) | The title that is currently displayed for the screen in the browser window title bar or as a title on the page (this makes it possible to search for texts inside this titles in scenarioo).
+status | [String](#String) | Whether the test step "failed" and was a "success".
+screenshotFileName | [String](#String) | The name of the step screenshot file inside the `screenshots` directory (usually something like '000.png', where 000 is the index of the step and '.png' the used image format)
+properties | Array of [DocuObject](#DocuObject) | Additional important detail information to describe important properties of a step can be put into this key-value map. This additional information will be displayed in the first section entitled "Step" inside the metadata area on the right side of the step image in the step view. E.g. the current browser URL is a good candidate to store here as a property with name 'URL'. It is recommended to only put the most important properties (that logically belong to the top most metadata section "Step") into this properties object. For more detailed metadata about a step (that you do not want to see in the top metadata section for a step), you should better use `metadata.details` instead, where you can define additional sections for metadata of a step.
+labels | [Labels](#Labels) | Labels for the page
 	
 	
 #### <a name="#html">Html</a>
