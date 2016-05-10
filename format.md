@@ -16,81 +16,7 @@ The following diagram gives a rough overview about the major entities in the sce
 * For a description of the JSON format, see http://json.org
 * TODO to be defined more?
 
-## Data Types
 
-### <a name="String">String</a>
-
-A regular string as defined by the JSON format, all characters in UTF-8 are allowed.
-
-### <a name="identifier_string">Identifier-Sring</a>
-
-All fields that are used as identifiers and therefore can be part of a URL have this type, and in this kind of string only usual characters are allowed, no spaces, no slashes and not other special characters, except for `-` and `_`.
-
-Regexp: `[A-Za-z_0-9\-]+`
-
-### <a name="Datetime">Datetime</a>
-
-The `Datetime` format used in scenarioo is a usual ISO data time format, as specified here: https://en.wikipedia.org/wiki/ISO_8601
-
-### <a name="labels">Labels</a>
-
-The value of a labels field is an array of labels, each label is a string that has to conform to following regexp.
-
-Regexp: `[ A-Za-z_0-9\-]+`
-
-### <a name="DocuObject">DocuObject</a>
-
-A `DocuObject` is an object that describes any additional generic data value or even more complex data objects.
-
-`DocuObject`s are very powerful and can be used to model arbitrary application specific data structures.
-
-Each `DocuObject` consists of following fields:
-
-Name | Type / Format | Description | Rules
-:---|:---|:---|:---
-labelKey | [String](#String) | Kind of the identifier (key) and the label text for the property or the relation to an item. Can be used for configuration purpose, e.g. to select some special property values to display in some special views e.g. as table columns. And this field is special since it does not realy belong to the information value object, meaning, that same object value, even typed value, can occur with multiple different label keys of course. | For objects in `properties` this is required, for other objects as in `items` it is optional, should be unique inside the parent object for all its properties to identify this property.
-value | [String](#String) | display text to display as value | Required
-type | [Identifier-String](#identifier_string) | A type identifier to group different type of objects, examples: UiElement, PageObject, Service, Feature, Story, ... Whatever types make sense to be defined in your application. Scenarioo Viewer can display typed objects in additional search tabs, to see all objects of one or several types in one view to easily search for them. | Optional
-id | [Identifier-String](#identifier_string) | A unique identifier for this typed object that is not allowed to contain some special characters. If not set explicitly the libraries will calculate this identifier for you from the object's value by sanitizing unallowed characters. This id will not be displayed but will be used in URLs and internaly for identification and comparison of objects and for storing the objects. It is recommended to keep this field unchanged for object's when they change their value (=display text), to keep trackable how this documented objects evolve between different builds. | Optional
-properties | Array of [DocuObject](#DocuObject) | For complex objects having again `DocuObject`s for its attribute values | Optional
-items | Array of [DocuObject](#DocuObject) | For objects that contain other objects as items (e.g. same as a usecase that contains scenarios), those objects can contain again `DocuObject`s  as its items. `labelKey` is not required inside this objects contained here. | Optional
-
-Some simple examples of valid `DocuObject`s:
-
-```
-
-        /* Example 1: A simple key value property */
-        {            
-            labelKey: "simpleStringValue",
-            value: "a textual information"
-        },
-
-        /* Example 2: More complex description of a typed object (with nested DocuObjects as properties) */
-        {
-            labelKey: "exception",
-            value: "Scenario failed: Element not found",
-            type: "Exception",
-            id: "ElementNotFoundException",
-            properties: [
-                {
-                    labelKey: "source",
-                    value: "expect(element.isPresent()).toBe(true)"
-                },
-                {
-                    labelKey: "exceptionMessage",
-                    value: "Failed: No element found using locator: By.cssSelector('div#myUndefinedId')"
-                },
-                {
-                    labelKey: "stackTrace",
-                    value: "... put the full stack trace here ..."
-                }                
-            ]
-        }
-
-```
- 
-For more detailed description and more complex examples, see [`Scenarioo Object Model`](scenarioo_object_model.md).
- 
 ## File System Structure
 
 TODO: Draw a new diagram using draw.io, also commit the draw.io source of the diagram as well as the png image.
@@ -339,10 +265,144 @@ TODO: Take spec from https://github.com/scenarioo/scenarioo/issues/149 when the 
 -> TODO
 
 
-# Changes compared to the previous (pre 3.x) file format
 
-* JSON instead of XML file format
 
-* New format for application specific objects, replacing former `details`, now called `properties`: see (scenarioo_object_model.md)
+## Data Types
 
--> TODO
+### <a name="String">String</a>
+
+A regular string as defined by the JSON format, all characters in UTF-8 are allowed.
+
+### <a name="identifier_string">Identifier-Sring</a>
+
+All fields that are used as identifiers and therefore can be part of a URL have this type, and in this kind of string only usual characters are allowed, no spaces, no slashes and not other special characters, except for `-` and `_`.
+
+Regexp: `[A-Za-z_0-9\-]+`
+
+### <a name="Datetime">Datetime</a>
+
+The `Datetime` format used in scenarioo is a usual ISO data time format, as specified here: https://en.wikipedia.org/wiki/ISO_8601
+
+### <a name="labels">Labels</a>
+
+The value of a labels field is an array of labels, each label is a string that has to conform to following regexp.
+
+Regexp: `[ A-Za-z_0-9\-]+`
+
+### <a name="DocuObject">DocuObject</a>
+
+A `DocuObject` is an object that describes any additional generic data value or even more complex data objects.
+
+`DocuObject`s are very powerful and can be used to model arbitrary application specific data structures.
+
+Each `DocuObject` consists of following fields:
+
+Name | Type / Format | Description | Rules
+:---|:---|:---|:---
+labelKey | [String](#String) | Kind of the identifier (key) and the label text for the property or the relation to an item. Can be used for configuration purpose, e.g. to select some special property values to display in some special views e.g. as table columns. And this field is special since it does not realy belong to the information value object, meaning, that same object value, even typed value, can occur with multiple different label keys of course. | For objects in `properties` this is required, for other objects as in `items` it is optional, should be unique inside the parent object for all its properties to identify this property.
+value | [String](#String) | display text to display as value | Optional, recommended for most objects that have a well defined value or display text, except for structural objects like a list of subitems that does not have a value on its own.
+type | [Identifier-String](#identifier_string) | A type identifier to group different type of objects, examples: UiElement, PageObject, Service, Feature, Story, ... Whatever types make sense to be defined in your application. Scenarioo Viewer can display typed objects in additional search tabs, to see all objects of one or several types in one view to easily search for them. | Optional
+id | [Identifier-String](#identifier_string) | A unique identifier for this typed object that is not allowed to contain some special characters. If not set explicitly the libraries will calculate this identifier for you from the object's value by sanitizing unallowed characters. This id will not be displayed but will be used in URLs and internaly for identification and comparison of objects and for storing the objects. It is recommended to keep this field unchanged for object's when they change their value (=display text), to keep trackable how this documented objects evolve between different builds. | Optional
+properties | Array of [DocuObject](#DocuObject) | For complex objects having again `DocuObject`s for its attribute values | Optional
+items | Array of [DocuObject](#DocuObject) | For objects that contain other objects as items (e.g. same as a usecase that contains scenarios), those objects can contain again `DocuObject`s  as its items. `labelKey` is not required inside this objects contained here. | Optional
+
+Some simple examples of valid `DocuObject`s:
+
+```
+
+        /* Example 1: A simple key value property */
+        {
+            labelKey: "simpleStringValue",
+            value: "a textual information"
+        },
+
+        /* Example 2: More complex description of a typed object (with nested DocuObjects as properties) */
+        {
+            labelKey: "exception",
+            value: "Scenario failed: Element not found",
+            type: "Exception",
+            id: "ElementNotFoundException",
+            properties: [
+                {
+                    labelKey: "source",
+                    value: "expect(element.isPresent()).toBe(true)"
+                },
+                {
+                    labelKey: "exceptionMessage",
+                    value: "Failed: No element found using locator: By.cssSelector('div#myUndefinedId')"
+                },
+                {
+                    labelKey: "stackTrace",
+                    value: "... put the full stack trace here ..."
+                }
+            ]
+        }
+
+```
+
+For more detailed description and more complex examples, see [`Scenarioo Object Model`](scenarioo_object_model.md).
+
+# Migration to Format 3.x
+
+When you want to use the new power of the new Format 3.0 you have to slightly change the way you fill in your Scenarioo documentation data into this new format.
+
+Most fields are kept the same as in the old format and the basic hi-level structure is still the same.
+
+Following things are different:
+
+* JSON instead of XML file format: just update your writer library, it will take care of writing json files in the correct structure for you!
+
+* All `Details` and `details` fields on all objects are replaced by the new generic object model as described [here](scenarioo_object_model.md). Instead of adding data to details with `addDetail` you have to use `properties.add` or `ìtems.add` instead and slightly adopt the data you fill in to the new `DocuObject`data model structure. this means the following:
+
+   * Add string values:
+      ```
+      // before:
+      scenarioObject.addDetail("key", "value");
+
+      // after:
+      scenarioObject.addProperty("key", "value");
+      ```
+
+   * Add object values (former usage of removed class `ObjectDescription`):
+     ```
+     // before:
+     ObjectDescription myObject = new ObjectDescription("MyObjectType", "my object name");
+     scenarioObject.addDetail("key", myObject);
+
+     // after:
+     DocuObject myObject = scenarioObject.addProperty("key", "my object name");
+     myObject.setType("MyObjectType");
+
+     // or even shorter (if you like new fluent notation):
+     scenarioObject.addProperty("key", "my object name").type("MyObjectType");
+     ```
+
+   * Add Object references (former usage of class `ObjectReference`):
+     This is not explicitly modeled as a seprate class anymore, just add your reference as if it was a normal object without any data (on fields `properties` or ìtems`) provided:
+     ```
+     // before:
+     ObjectReference myObjectRef = new ObjectReference("MyObjectType", "my object name");
+     scenarioObject.addDetail("key", myObjectRef);
+
+     // after (using new fluent notation):
+     DocuObject myObject = scenarioObject.addProperty("key", "my object name").type("MyObjectType");
+     ```
+
+   * Add a list of data items (former class `ObjectList`):
+      ```
+      // before:
+      ObjectList myObjectList = new ObjectList();
+      myObjectList.add("item 1";
+      myObjectList.add("item 2");
+      scenarioObject.addDetail("key", myObjectList);
+
+      // after:
+      DocuObject myObjectList = scenarioObject.addProperty("key");
+      myObjectList.addItem("item 1"):
+      myObjectList.addItem("item 2"):
+      ```
+   * Add tree structures (former class `ObjectTree`):
+     TODO
+
+
+... TODO ...
