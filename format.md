@@ -16,7 +16,6 @@ The following diagram gives a rough overview about the major entities in the sce
 * For a description of the JSON format, see http://json.org
 * TODO to be defined more?
 
-
 ## Data Types
 
 ### <a name="string">String</a>
@@ -35,7 +34,9 @@ The `Datetime` format used in scenarioo is a usual ISO data time format, as spec
 
 ### <a name="labels">Labels</a>
 
-The value of a labels field is an array of labels, each label is an <a href="#identifier_string">Identifier-String</a>.
+The value of a labels field is an array of labels, each label is a string that has to conform to following regexp.
+
+Regexp: `[ A-Za-z_0-9\-]+`
 
 ### <a name="DocuObject">DocuObject</a>
 
@@ -46,8 +47,8 @@ A `DocuObject` is an object that describes any additional generic data value or 
 Each `DocuObject` consists of following fields:
 
 Name | Type / Format | Description | Rules
-:---|:---|:---
-labelKey | <a href="#string">String</a> | Kind of the identifier (key) and the label text for the property or the relation to an item. Can be used for configuration purpose, e.g. to select some special property values to display in some special views e.g. as table columns. And this field is special since it does not realy belong to the information value object, meaning, that same object value, even typed value, can occur with multiple different label keys of course. | For objects in `properties` this is required, for other objects as in `items` it is optional, should be unique inside the parent object for all its properties to identify this property. 
+:---|:---|:---|:---
+labelKey | [String](#string) | Kind of the identifier (key) and the label text for the property or the relation to an item. Can be used for configuration purpose, e.g. to select some special property values to display in some special views e.g. as table columns. And this field is special since it does not realy belong to the information value object, meaning, that same object value, even typed value, can occur with multiple different label keys of course. | For objects in `properties` this is required, for other objects as in `items` it is optional, should be unique inside the parent object for all its properties to identify this property.
 value | <a href="#string">String</a> | display text to display as value | Required
 type | <a href="#identifier_string">Identifier-String</a> | A type identifier to group different type of objects, examples: UiElement, PageObject, Service, Feature, Story, ... Whatever types make sense to be defined in your application. Scenarioo Viewer can display typed objects in additional search tabs, to see all objects of one or several types in one view to easily search for them. | Optional
 id | <a href="#identifier_string">Identifier-String</a> | A unique identifier for this typed object that is not allowed to contain some special characters. If not set explicitly the libraries will calculate this identifier for you from the object's value by sanitizing unallowed characters. This id will not be displayed but will be used in URLs and internaly for identification and comparison of objects and for storing the objects. It is recommended to keep this field unchanged for object's when they change their value (=display text), to keep trackable how this documented objects evolve between different builds. | Optional
@@ -113,7 +114,7 @@ Scenarioo allows to document several branches of your applications. You can use 
 #### Rules
 
 * A folder in the *documentation root* is a *branch folder* if and only if it also contains a valid `branch.json` file.
-* The folder name of a *branch folder* must be the URL encoded version of the `name` value in the `branch.json`. If this is not the case, the folder is not considered a valid *branch folder*. 
+* The folder name of a *branch folder* must be the same as the field `ìd` inside the `branch.json`. Libraries will calculate the `id` field and therefore also the name of the directory from the `name` field by replacing special characters.
 * It is allowed to have other folders that are not *branch folders* in the *documentation root*. They are ignored by Scenarioo.
 
 #### Fields
@@ -133,12 +134,12 @@ properties  | Array of <a href="#DocuObject">DocuObject</a> | For additional pro
 {
 	"name" : "develop branch",
 	"description" : "Here we integrate all the cool features for the next release.",
-	"details" : {
-		"branch creation date" : "...",
-		"authors" : [
-			"homer", "marge", "bart", "lisa", "maggie"
-		]
-	}
+	"properties" : [
+	    {
+    		"labelKey" : "authors",
+    		"value" : "bruderol, tobiaszuercher, dola, adiherzog, danielsuter, mi-we"
+    	}
+	]
 }
 ```
 
