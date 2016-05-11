@@ -9,8 +9,8 @@
     },
     {
       "labelKey": "complexObjectProperty",
-      "value": "complex object 1",
-      "id": "complex-object-1",
+      "value": "Complex Object 1",
+      "id": "Complex-Object-1",
       "type": "ComplexObject",
       "properties": [
         {
