@@ -48,7 +48,7 @@ Scenarioo allows to document several branches of your applications. You can use 
 A `branch.json` can have following fields to describe a branch:
 
 Name | Type / Format | Description  | Rules
-:---|:---|:---
+:---|:---|:---|:---
 name        | [String](#String)  | Display  for this branch. Use something that identifies your branch or your software version, e.g. "Release 2014-10-25", "Version 3.1", "trunk" or "123-some-super-new-feature". | Required
 id          | [Identifier-String](#identifier_string) | Identifier used for this object, if not set explicitly it is calculated from `name` by replacing unallowed characters | Optional
 description | [String](#String)  | A short description of the purpose of this branch, what version of your application does this branch contain or document. | Optional
