@@ -63,10 +63,12 @@ var step = {
         }
     ],
 
-    propertyGroups: [ // for additional propoerties that are grouped in property sections, each with a label name
+    sections: [ // for additional propoerties that are grouped in property sections, each with a label name
         {
             labelKey: "Service Calls",
-            properties: []
+            properties: [],
+            items: []
+            // ...
         }
     ],
 

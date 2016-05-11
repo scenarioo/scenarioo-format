@@ -97,7 +97,7 @@
       "value": "http://www.my-application.ch/example/page.html?id=12"
     }
   ],
-  "propertyGroups": [
+  "sections": [
     {
       "labelKey": "Proprty Group 1",
       "properties": [
