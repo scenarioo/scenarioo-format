@@ -31,5 +31,31 @@
         }
       ]
     }
+  ],
+  "sections": [
+    {
+      "labelKey": "More Information",
+      "value": "#Simple Text Section with Markdown\n\nAllowed to have multiline content of course.\n\nBut we need to take care to visualize this nicely."
+    },
+    {
+      "labelKey": "Another Section with more Properties",
+      "properties": [
+        {
+          "labelKey": "property1",
+          "value": " a simple value"
+        },
+        {
+          "labelKey": "property2-with-list-value",
+          "items": [
+            {
+              "value": "item1"
+            },
+            {
+              "value": "item2"
+            }
+          ]
+        }
+      ]
+    }
   ]
 }
