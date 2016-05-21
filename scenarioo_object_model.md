@@ -1,27 +1,31 @@
-# New Scenarioo Object Model
+# Scenarioo DocuObject Model
 
-> this replaces the former generic Details data model
-
-The Scenarioo Object Model allows to add arbitrary application-specific documentation data to any object in the scenarioo model.
+The Scenarioo DocuObject Model allows to add arbitrary application-specific documentation data to any object in the scenarioo model.
 
 Each object in the scenario model has a property `properties` (similar to `details` in scenarioo 2.x model) that can be used to attach additional data attributes to an object.
 This `properties` basically is an array of entries (with `labelKey`, `value` and optionaly some more meta data information) explained in more details in following sections.
 
 Inside such properties you can even store more complex objects of complex data structure, that have a `type` and  which can again contain `properties`. 
 
-Similar to all scenarioo's explicit object types (useCase, scenario, step, page, ...) also your own application-specific type of objects can contain again sub items in an optional field called `ìtems`.
-Using `ìtems` you can model objects who contain again a list of sub objects, the same as e.g. a useCase in the scenarioo domain model, that has scenarios as sub items.
+Similar to all scenarioo's explicit object types (useCase, scenario, step, page, ...) also your own application-specific type of objects can contain again sub items in an optional field called `items`.
+Using `items` you can model objects who contain again a list of sub objects, the same as e.g. a useCase in the scenarioo domain model, that has scenarios as sub items.
 
 ## Model Overview
 
-A picture says more than tousand words:
+Two pictures say more than tousand words:
 
-![Scenarioo Object Model Example](images/draw.io/scenarioo_object_model.png)
+![Scenarioo Docu Object Model](images/draw.io/scenarioo_docu_object_model_overview.png)
+
+The first picture above demonstrates how `DocuObject` objects can get attached to different kind of scenarioo docu model entities, either as `properties`(for all entities), or also as `sections` (only for most important entities, like use case, scenario and step).
+
+The following picture demonstrates an example object hierarchy of 5 DocuObjects to demonstarte how this model can be used to model arbitrary application specific documentation data object structures:
+
+![Scenarioo Object Model Example](images/draw.io/scenarioo_docu_object_model_example.png)
  
 This example UML Object Diagram demonstrates how all elements of an UML object diagram could be modeled in the new Scenarioo Model: 
-See annotations in color with mapping the elements to the new scenarioo model.
+See annotations in color with mapping the elements to the scenarioo DocuObject model.
 
-This means that any UML object model could be kind of stored using the Scenarioo Object Model.
+This means that any UML object model could be kind of stored using the Scenarioo DocuObject Model.
 
 ### Analogy to Tables
 
@@ -42,7 +46,7 @@ Each cell entry can be described as follows:
 If the distinction between `properties`  and `items` is not understandable for you:
 
  * `properties` are simple attributes describing a data object
- * `ìtems` are hierarchical sub items (e.g. like a usecase has several scenarios and a scenario has several steps)
+ * `items` are related items or hierarchical sub items (e.g. like a usecase has several scenarios and a scenario has several steps). Those are used to model lists or even trees of values or objects.
  * It is similar to attributes/fields (=`properties`) versus references/associations (=`items`) in the UML model
  * Both have same power concerning what data can be modeled/stored inside, but the visualization (where you see what) will be different
 
@@ -57,40 +61,12 @@ Each entry in a `properties` or `items` array is a object of type `DocuObject` t
 The following extensive example demonstrates how this model can be used to add concrete different kind of application-specific data to a scenario in your scenarioo documentation.
 (same is of course also possible on a branch, build, useCase, step, and page)
  
-See [Example JSON of a scenario with object model data](scenarioo_object_model_example.js) 
- 
-## Open Points / To be defined
-
- * What characters should we allow in ID fields?
-    * Since it is a breaking release anyway, we can live with the fact that all old URLs will not be valid anymore on next release
-       * Therefore we will only allow characters that can be used without problems in URLs without encoding them for `id` fields: A-Za-z0-9-_ that's it.
-       * all other characters will have to be sanitized by the libraries somehow (to be defined).
-       * To still support all old URLs, we could introduce a redirect filter for those requests where unallowed characters are in the requests
-        
- * To be consistent, also the usual objects should now get an `ìtems` field, shouldn't they?
-       * No, not needed, because the existing explicit object types of scenarioo allready have explicit modeled sub items (useCase has scenarios, scenario has steps, etc.)
-       
- * Do we allow to have properties without a `labelKey`? 
-       * No
-       * But items can have objects without `labelKey`.
- 
- * Do `labelKey` values have to be unique for one object? 
-       * Yes, they should (if not, it will work anyway, but referencing an object through the label key will take anyone).
- 
- * Do we allow to have entries in `îtems` without a `labelKey`? 
-       * Yes (data migration will become impossible otherwise).
- 
- * Would numeric values and units be a good idea? see example for service call duration where building statistic could become interesting once.
-       * For now not, we could introduce it, if we really need it
-    
- * Should generic object items also have a field `labels` to add labels?
-       * We might add that later, for now not (because client does not yet support it)
-       * Same for build and branch
+See [Example JSON of a scenario with object model data](scenarioo_object_model_example.js)
  
 ## Design Decissions
 
 > this section tries to summarize a little bit, why the current design is as it is and what arguments we discussed.
-> We did not note all the arguments we discussed at the meeting, so feel free to add more arguments or more împortant things we decidced, in case you remember. Thank you!
+> We did not note all the arguments we discussed at the meetings, so feel free to add more arguments or more împortant things we decidced, in case you remember. Thank you!
 
 1. What were the major architectural drivers for the new design?
 
@@ -120,7 +96,37 @@ See [Example JSON of a scenario with object model data](scenarioo_object_model_e
     * Last but not least we not like the idea of allowing any json without restriction, because while this might be easy for JS-library, might not be sooo easy for C# and Java Library.
  
     * more arguments here?
- 
+
+3. Some minor points discussed and decided about for the new format:
+
+ * What characters should we allow in ID fields?
+    * Since it is a breaking release anyway, we can live with the fact that all old URLs will not be valid anymore on next release
+       * Therefore we will only allow characters that can be used without problems in URLs without encoding them for `id` fields: A-Za-z0-9-_ that's it.
+       * all other characters will have to be sanitized by the libraries somehow (to be defined).
+       * To still support all old URLs, we could introduce a redirect filter for those requests where unallowed characters are in the requests
+
+ * To be consistent, also the usual objects should now get an `ìtems` field, shouldn't they?
+    * No, not needed, because the existing explicit object types of scenarioo allready have explicit modeled sub items (useCase has scenarios, scenario has steps, etc.)
+
+ * Do we allow to have properties without a `labelKey`?
+     * No
+     * But items can have objects without `labelKey`.
+
+ * Do `labelKey` values have to be unique for one object?
+    * Yes, they should (if not, it will work anyway, but referencing an object through the label key will take anyone).
+
+ * Do we allow to have entries in `îtems` without a `labelKey`?
+    * Yes (data migration will become impossible otherwise).
+
+ * Would numeric values and units be a good idea? see example for service call duration where building statistic could become interesting once.
+    * For now not, we could introduce it, if we really need it
+
+ * Should generic object items also have a field `labels` to add labels?
+    * We might add that later, for now not (because client does not yet support it)
+    * Same for build and branch
+
+
+
 ## Change History
 
 * 11.04.2016 First draft discussed with @tobiaszuercher @felixmokross @dola 
@@ -132,3 +138,4 @@ See [Example JSON of a scenario with object model data](scenarioo_object_model_e
     * the rest should still be as discussed, feel free to give feedback on issue #2 or directly contribute to this model by modifying this file here.
 * 27.04.2016 presentation at the dev team meeting, the model is considered finalized, and will be implemented as described here
 * 09.05.2016 clean up of this docu page, according our further discussions. Model is considered finalized.
+* 21.05.2016 Improved documentation for final format 3.0 docu, added a picture, cleaned up open points.

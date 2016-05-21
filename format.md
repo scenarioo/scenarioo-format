@@ -4,34 +4,65 @@ This is the specification of the Scenarioo documentation format. To find out mor
 
 WARNING: This file format is not used in current versions of Scenarioo 2.x. It is the future format for Scenarioo 3.x. For a reference of the Scenarioo 2.x format, please have a look in our [Wiki](https://github.com/scenarioo/scenarioo/wiki/Scenarioo-Writer-Documentation-Format).
 
+This doucmentation is mainly targeted to developers of libraries which can write the scenarioo documentation format. As a user of scenarioo you would probably use one of those libraries that will help you write this format out of your tests.
+Neverteless it can also be very helpful for users of those libraries to understand the format in details, what can be stored where in scenarioo. Therefore we also recommend this documentation format description to be read for users of the scenarioo libraries.
+
 ## Domain Model Overview
 
 The following diagram gives a rough overview about the major entities in the scenarioo documentation model:
 
 ![Scenarioo Domain Model](images/draw.io/Scenarioo Domain Model.png)
 
+This major structure of your documenation is also reflected in the Scenarioo Viewer where the major navigation is based on this same structure.
 
-## General rules
+The following explanations should give an overview about the purpose of each of this basic entity types in the model and how they are stored inside json files in the file system.
 
-* For a description of the JSON format, see http://json.org
-* TODO to be defined more?
+For more general information about JSON, see [http://json.org](http://json.org)
+
+Please refer to the linked more detailed entity descriptions explaining all data that you can store inside each of this entity objects.
+
+Entity Type | Description  | Storage Format
+:---|:---|:---
+[Branch](#Branch)      | A branch usually reflects a product version that you want to document, e.g. a specific release version, current development version, a special feature branch etc. | A directory in the scenarioo documentation root directory with a `branch.json` file inside, and all other documentation data of that branch as further sub directories.
+[Build](#Build)       | A build reflects a full generated documentation version on a specific point in time, this is the major container for all documentation data that you generate during a full build run that tests and documents your software. You would generate such a build for every change, e.g. on every push of changes to that branch. | A directory inside the parent branch directory with a `build.json` file inside, and all other documentation data belonging to that build as further sub directories.
+[Use Case](#Use Case) | A use case documents a user goal a user of your system can perform with your system, that you want to have documented and tested as one group of test/usage scenarios. Usually you will structure your e2e/UI-tests by grouping them into such use cases. E.g. usually you will write one spec file or test class with several test cases or test scenarios to test and document all important scenarios of a use case. Take care to not choose your use cases to fine granular. Those should reflect hi level functions a user can perform with your documented systems. Allways use non-technical user or business language (as much as possible) to name your use cases. | A directory inside the parent build directory with a `usecase.json` file inside, and all other documentation data belonging to that use case (e.g. all usage or test scenarios) as further sub directories.
+[Scenario](#Scenario) | A scenario reflects one test case (aka "test scenario") that tests one typical or important flow through the documented use case. Each use case should be typically documented by a few test scenarios. Do not forget to not only test and document the simple happy scenarios, but also important alternative and exceptional scenarios: e.g. at least one alternative scenario for when the user enters invalid data and then corrects it and finally anyway completes the use case, and also important exceptional scenarios for when the user can not complete his goal, because e.g. some other system is not available or important preconditions are not met. | A directory inside the parent build directory with a `scenario.json` file inside, and all other documentation data (e.g. the interaction steps) are stored in further sub directories.
+[Step](#Step) | A step reflects one important interaction step or point in time in a test scenario flow. Each step usually consists of a screenshot (if your test is a UI test), further information about the step (e.g. description text, the page object function that triggered that step, input and output data, etc.), and probably also the HTML source code (if it is a web application). | Each description of a step of a scenario is stored as a json file inside the directory `steps` inside the parent scenario directory. The name of the step files are named by the index of the file in format `001.json` (3 digit numbers, or more digits in case you have scenarios with more than tousand steps), the first step index should be `0` and accordingly the first step file is stored as `000.json`. Screenshots of steps have to be stored in a separate optional directory `screenshots` inside the parent scenario directory. And also the html sources are stored in an optional directory `html` inside the scenario directory. All these files have to follow the same naming conventions to have the same name containing the step index they belong to: `000.png` or `000.jpeg` and `000.html`.
+[Page](#Page) | To improve the navigability in your scenarioo documentation you should try to group all interaction steps in your scenarios by pages. Several steps inside a scenario usually happen on the same page (or view, or dialog or whatsoever), and you can use a page object inside your step description to describe such pages. The `id` field (usually generated by libraries from the `name` field) of such a page identifies it, and inside scenario you can then easily navigate between different scenarios that interact with the same page or view or dialog more easily. | A page and any information about a page is simply stored inside the step description file of a step on the field `page`. Multiple steps can refer to the same page by simply storing an object inside the field `page` with the same `name` and same `id` values inside it (yes, we know that our documentation format is somehow redundant here, but since this data is generated, it causes no real problem here)
+
+Additionaly to these basic model there are some additional important data types for storing more detailed application specific documentation data as part of the above described entities inside their json files.
+
+Following image gives an overview about this additional data types that can be attached to most scenarioo entity objects to store more application specific documentation data:
+
+![Scenarioo Docu Object Model Overview](images/draw.io/scenarioo_docu_object_model_overview.png)
+
+Entity Type | Contained in | Description
+:---|:---|:---
+<a name="Properties">Properties</a> | All Entities: Branch, Build, Use Case, Scenario, Step, Page, DocuObject | Every entity object in the scenario documentation model can have arbitrary additional properties, which are application specific attributes to add to those objects (basically key-value-pairs). Properties are stored as arrays of `DocuObject`. Each property must have a required unique `labelKey` representing the name of that property.
+<a name="Sections">Sections</a> | Use Case, Scenario, Step | Most important objects in a scenarioo documentation can become more complex and therefore have the ability to add additional documentation data in so called `sections`. Every section is again a `DocuObject`. The required `labelKey` of each section is the title of the collapsable section inside which this data will be visualized in the documentation.
+<a name="Items">Items</a> | DocuObject | A generic docu object can even have more related objects as so called `items`. Items is just an array of related `DocuObject`. Each entry can have an optional `labelKey` which represents the label of the relation. Items are important to build `DocuObject` data structures like lists or trees in your documentation data. Like that your own application specific objects can have other related items, just like the scenarioo entities, e.g. like a use case that has scenarios as related items.
+[DocuObject](#DocuObject) | Properties, Sections or Items | You can describe arbitrary application specific documentation data as generic DocuObjects. A docu object can be just a simple string `value` to display in the documentation, or it can even have a `type` to group documenation objects of same type and make them more easily navigatable in the documentation (e.g. navigate through all tests refering to the same object of a specific `id` and `type`). A `DocuObject` can again have nested `Properties` or `Items` to describe more complex objects and data structures.
+[Labels](#Labels) | Use Case, Scenario, Step, Page | Some important scenarioo entity objects have the ability to get labels attached. Labels are an array of special label strings. Each label string is a unique keyword to mark an object with a label. Labels can be searched for in the Scenarioo Viewer and can even be used in URLs or in the UI as filter criterias in some places.
+
+##File System Structure
+
+All documentation data, that Scenarioo users should be able to browse in the Viewer, has to be stored in the so called `Scenarioo Documentation Data Root Directory`, that can be configured in the configuration of your Scenarioo Viewer web application deployment.
+
+The following reference example in this repository demonstrates an example of this file structure of such a scenarioo documentation. The directory [example](./example) contains a full example file structure of such a `Scenarioo Documentation Data Root Directory`, as described allready in the model overview above.
 
 
-## File System Structure
+##Reference Example
 
-TODO: Draw a new diagram using draw.io, also commit the draw.io source of the diagram as well as the png image.
+You can find a full reference example of such a scenarioo documentation data directory file structure in followning directory in this repo:
 
-Scenarioo documentation data is stored in a certain structure of folders and files. The image below illustrates this. The folder structure reflects the domain model of Scenarioo (see previous chapter).
+[Scenarioo Documentation Example - Reference File Structure](./example)
 
-![Scenarioo File System Structure](https://cloud.githubusercontent.com/assets/5416988/3470838/f6fab378-02bd-11e4-8405-06d4d89c90a3.jpg)
+All libraries should be tested to be able to generate exactly this same example, to validate their feature completeness.
 
-## Files and Folders
 
-### Documentation Root Folder
+## Entities and their fields
 
-This is the folder where all the Scenarioo documentation files and folders are stored. Typically it contains a number of branch folders.
-
-### Branches
+### Branch
 
 #### Purpose
 
@@ -283,7 +314,7 @@ Regexp: `[A-Za-z_0-9\-]+`
 
 The `Datetime` format used in scenarioo is a usual ISO data time format, as specified here: https://en.wikipedia.org/wiki/ISO_8601
 
-### <a name="labels">Labels</a>
+### <a name="Labels">Labels</a>
 
 The value of a labels field is an array of labels, each label is a string that has to conform to following regexp.
 
