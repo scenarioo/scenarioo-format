@@ -11,7 +11,7 @@ Neverteless it can also be very helpful for users of those libraries to understa
 
 The following diagram gives a rough overview about the major entities in the scenarioo documentation model:
 
-![Scenarioo Domain Model](images/draw.io/Scenarioo Domain Model.png)
+![Scenarioo Domain Model](images/draw.io/scenarioo_domain_model_overview.png)
 
 This major structure of your documenation is also reflected in the Scenarioo Viewer where the major navigation is based on this same structure.
 
@@ -48,17 +48,15 @@ Entity Type | Contained in | Description
 
 All documentation data, that Scenarioo users should be able to browse in the Viewer, has to be stored in the so called `Scenarioo Documentation Data Root Directory`, that can be configured in the configuration of your Scenarioo Viewer web application deployment.
 
-The following reference example in this repository demonstrates an example of this file structure of such a scenarioo documentation. The directory [example](./example) contains a full example file structure of such a `Scenarioo Documentation Data Root Directory`, as described allready in the model overview above.
-
+The following reference example demonstrates an example file structure of such a scenarioo documentation, as described allready in the model overview above.
 
 ##Reference Example
 
-You can find a full reference example of such a scenarioo documentation data directory file structure in followning directory in this repo:
+You can find a full reference example of such a scenarioo documentation data directory file structure in the directory `reference-example` in this repository:
 
-[Scenarioo Documentation Example - Reference File Structure](./example)
+[Scenarioo Documentation Referecne Example](./reference-example)
 
 All libraries should be tested to be able to generate exactly this same example, to validate their feature completeness.
-
 
 ## Entities and their fields
 

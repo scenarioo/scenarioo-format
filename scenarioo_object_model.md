@@ -136,6 +136,6 @@ See [Example JSON of a scenario with object model data](scenarioo_object_model_e
     * I documented an example object model in the example and created a nice model overview picture to explain it more easy
     * I tried to document all discussed arguments and important design decissions
     * the rest should still be as discussed, feel free to give feedback on issue #2 or directly contribute to this model by modifying this file here.
-* 27.04.2016 presentation at the dev team meeting, the model is considered finalized, and will be implemented as described here
-* 09.05.2016 clean up of this docu page, according our further discussions. Model is considered finalized.
-* 21.05.2016 Improved documentation for final format 3.0 docu, added a picture, cleaned up open points.
+* 27.04.2016 @bruderol presented the design at the dev team meeting, the model is considered finalized, and will be implemented as described here
+* 09.05.2016 @bruderol cleaned up this docu page, according our further discussions. Model is considered more or less finalized.
+* 21.05.2016 @bruderol improved and finalized documentation for final format 3.0 docu, added a picture, cleaned up open points.
