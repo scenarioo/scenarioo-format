@@ -38,9 +38,9 @@ Following image gives an overview about this additional data types that can be a
 
 Entity Type | Contained in | Description
 :---|:---|:---
-<a name="Properties">Properties</a> | All Entities: Branch, Build, Use Case, Scenario, Step, Page, DocuObject | Every entity object in the scenario documentation model can have arbitrary additional properties, which are application specific attributes to add to those objects (basically key-value-pairs). Properties are stored as arrays of `DocuObject`. Each property must have a required unique `labelKey` representing the name of that property.
-<a name="Sections">Sections</a> | Use Case, Scenario, Step | Most important objects in a scenarioo documentation can become more complex and therefore have the ability to add additional documentation data in so called `sections`. Every section is again a `DocuObject`. The required `labelKey` of each section is the title of the collapsable section inside which this data will be visualized in the documentation.
-<a name="Items">Items</a> | DocuObject | A generic docu object can even have more related objects as so called `items`. Items is just an array of related `DocuObject`. Each entry can have an optional `labelKey` which represents the label of the relation. Items are important to build `DocuObject` data structures like lists or trees in your documentation data. Like that your own application specific objects can have other related items, just like the scenarioo entities, e.g. like a use case that has scenarios as related items.
+[Properties](#Properties) | All Entities: Branch, Build, Use Case, Scenario, Step, Page, DocuObject | Every entity object in the scenario documentation model can have arbitrary additional properties, which are application specific attributes to add to those objects (basically key-value-pairs). Properties are stored as arrays of `DocuObject`. Each property must have a required unique `labelKey` representing the name of that property.
+[Sections](#Sections) | Use Case, Scenario, Step | Most important objects in a scenarioo documentation can become more big and more complex and therefore even have the ability to group additional documentation data in so called `sections`. Every section is again a `DocuObject`. The required `labelKey` of each section is the title of the collapsable section inside which this data will be visualized in the documentation.
+[Items](#Items) | DocuObject | A generic docu object can even have more related objects as so called `items`. Items is just an array of related `DocuObject`. Each entry can have an optional `labelKey` which represents the label of the relation. Items are important to build `DocuObject` data structures like lists or trees in your documentation data. Like that your own application specific objects can have other related items, just like the scenarioo entities, e.g. like a use case that has scenarios as related items.
 [DocuObject](#DocuObject) | Properties, Sections or Items | You can describe arbitrary application specific documentation data as generic DocuObjects. A docu object can be just a simple string `value` to display in the documentation, or it can even have a `type` to group documenation objects of same type and make them more easily navigatable in the documentation (e.g. navigate through all tests refering to the same object of a specific `id` and `type`). A `DocuObject` can again have nested `Properties` or `Items` to describe more complex objects and data structures.
 [Labels](#Labels) | Use Case, Scenario, Step, Page | Some important scenarioo entity objects have the ability to get labels attached. Labels are an array of special label strings. Each label string is a unique keyword to mark an object with a label. Labels can be searched for in the Scenarioo Viewer and can even be used in URLs or in the UI as filter criterias in some places.
 
@@ -318,6 +318,18 @@ The value of a labels field is an array of labels, each label is a string that h
 
 Regexp: `[ A-Za-z_0-9\-]+`
 
+### <a name="Properties">Properties</a>
+
+The value of a properties field is an array of [DocuObject](#DocuObject). Each contained DocuObject must at least have a required `labelKey` which has to be unique inside the array. No more special rules apply. The array may also be empty or missing.
+
+### <a name="Sections">Sections</a>
+
+The value of a `sections` field is an array of [DocuObject](#DocuObject). Each contained DocuObject must at least have a required `labelKey` which has to be unique inside the array. No more special rules apply. The array may also be empty or missing.
+
+### <a name="Items">Items</a>
+
+The value of an `items` field is a simple array of [DocuObject](#DocuObject). No special rules apply to the contained docu objects. The array may also be empty or missing.
+
 ### <a name="DocuObject">DocuObject</a>
 
 A `DocuObject` is an object that describes any additional generic data value or even more complex data objects.
@@ -328,12 +340,12 @@ Each `DocuObject` consists of following fields:
 
 Name | Type / Format | Description | Rules
 :---|:---|:---|:---
-labelKey | [String](#String) | Kind of the identifier (key) and the label text for the property or the relation to an item. Can be used for configuration purpose, e.g. to select some special property values to display in some special views e.g. as table columns. And this field is special since it does not realy belong to the information value object, meaning, that same object value, even typed value, can occur with multiple different label keys of course. | For objects in `properties` this is required, for other objects as in `items` it is optional, should be unique inside the parent object for all its properties to identify this property.
+labelKey | [String](#String) | Kind of the identifier (key) and the label text for the property or the relation to an item. Can be used for configuration purpose, e.g. to select some special property values to display in some special views e.g. as table columns. And this field is special since it does not realy belong to the information value object, meaning, that same object value, even typed value, can occur with multiple different label keys of course. | For objects in `properties` and in `sections` this is required, for other objects as in `items` it is optional, should be unique inside the parent object for all its properties to identify this property.
 value | [String](#String) | display text to display as value | Optional, recommended for most objects that have a well defined value or display text, except for structural objects like a list of subitems that does not have a value on its own.
 type | [Identifier-String](#identifier_string) | A type identifier to group different type of objects, examples: UiElement, PageObject, Service, Feature, Story, ... Whatever types make sense to be defined in your application. Scenarioo Viewer can display typed objects in additional search tabs, to see all objects of one or several types in one view to easily search for them. | Optional
 id | [Identifier-String](#identifier_string) | A unique identifier for this typed object that is not allowed to contain some special characters. If not set explicitly the libraries will calculate this identifier for you from the object's value by sanitizing unallowed characters. This id will not be displayed but will be used in URLs and internaly for identification and comparison of objects and for storing the objects. It is recommended to keep this field unchanged for object's when they change their value (=display text), to keep trackable how this documented objects evolve between different builds. | Optional
-properties | Array of [DocuObject](#DocuObject) | For complex objects having again `DocuObject`s for its attribute values | Optional
-items | Array of [DocuObject](#DocuObject) | For objects that contain other objects as items (e.g. same as a usecase that contains scenarios), those objects can contain again `DocuObject`s  as its items. `labelKey` is not required inside this objects contained here. | Optional
+properties | [Properties](#Properties): Array of [DocuObject](#DocuObject) | For complex objects having again `DocuObject`s for its attribute values | Optional
+items | [Items](#Items): Array of [DocuObject](#DocuObject) | For objects that contain other objects as items (e.g. same as a usecase that contains scenarios), those objects can contain again `DocuObject`s  as its items. `labelKey` is not required inside this objects contained here. | Optional
 
 Some simple examples of valid `DocuObject`s:
 
