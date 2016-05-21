@@ -60,46 +60,45 @@ All libraries should be tested to be able to generate exactly this same example,
 
 ## Entities and their fields
 
-### Branch
+The following sections describe for each entity how they are stored and what fields they can have.
 
-#### Purpose
+### <a name="Branch">Branch</a>
 
-Scenarioo allows to document several branches of your applications. You can use this to document co-existing branches and also to document different versions of your software. We reccommend to document each version of your application as a separate branch in Scenarioo.
+**Purpose:** Document different development branches or product versions of your software system under development as so called `branches`.
 
-#### Rules
+**Location in File Sytem:**
+* Directory in the *documentation root* with a `branch.json` file inside.
+* The directory name of a *branch directory* must be the same as the field `id` inside the `branch.json`.
+* All other directories that do not conform to these rules will be ignored by the Scenarioo viewer.
 
-* A folder in the *documentation root* is a *branch folder* if and only if it also contains a valid `branch.json` file.
-* The folder name of a *branch folder* must be the same as the field `ìd` inside the `branch.json`. Libraries will calculate the `id` field and therefore also the name of the directory from the `name` field by replacing special characters.
-* It is allowed to have other folders that are not *branch folders* in the *documentation root*. They are ignored by Scenarioo.
 
-#### Fields
-
-A `branch.json` can have following fields to describe a branch:
+**Fields of `branch.json`:**
 
 Name | Type / Format | Description  | Rules
 :---|:---|:---|:---
-name        | [String](#String)  | Display  for this branch. Use something that identifies your branch or your software version, e.g. "Release 2014-10-25", "Version 3.1", "trunk" or "123-some-super-new-feature". | Required
-id          | [Identifier-String](#identifier_string) | Identifier used for this object, if not set explicitly it is calculated from `name` by replacing unallowed characters | Optional
+name        | [String](#String)  | Display name for this branch. Use something that identifies your branch, e.g. "Release 2014-10-25", "Version 3.1", "trunk" or "123-some-super-new-feature". | Required
+id          | [Identifier-String](#identifier_string) | Identifier used for this object, if not set explicitly by the user, libraries will calculate it from `name` by replacing unallowed characters | Required (but calculated by Libraries from `name`, if not set), must be the same as the directory name.
 description | [String](#String)  | A short description of the purpose of this branch, what version of your application does this branch contain or document. | Optional
-properties  | Array of [DocuObject](#DocuObject) | For additional properties to add arbitrary appplication specific docu data | Optional
+properties  | [Properties](Properties) | For additional properties to add arbitrary appplication specific docu data | Optional
 
-#### Example branch.json file
+**Example branch.json file:**
 
 ```
 {
-	"name" : "develop branch",
-	"description" : "Here we integrate all the cool features for the next release.",
-	"properties" : [
-	    {
+    "id": "develop-branch"
+    "name" : "develop branch",
+    "description" : "Here we integrate all the cool features for the next release.",
+    "properties" : [
+        {
     		"labelKey" : "authors",
     		"value" : "bruderol, tobiaszuercher, dola, adiherzog, danielsuter, mi-we"
     	}
-	]
+    ]
 }
 ```
 
 
-### Builds
+### <a name="Build">Build (TODO)</a>
 
 #### Purpose
 
@@ -138,13 +137,13 @@ properties     | Array of [DocuObject](#DocuObject) | Whatever additional inform
 ```
 
 
-#### Use Case Folder and usecase.json
+### <a name="Use-Case">Use Case (TODO)</a>
 
-### Purpose
+**Purpose:**
 
 The documentation is structured into use cases. These use cases should whenever possible reflect the business view. Typical examples are "log in", "send in-app message", "order pizza" or "change profile settings".
 
-### Rules
+**Rules:**
 
 * A folder in the *build folder* is a *use case folder* if and only if it contains a valid `usecase.json` file.
 * The folder name of a *use case folder* must be the URL encoded version of the `name` value in the `usecase.json`. If this is not the case, the folder is not considered a *use case folder*.
@@ -176,13 +175,13 @@ labels      | [Labels](#Labels) | Add some info that is interesting on the use c
 ```
 
 
-#### Scenario Folder and scenario.json
+### <a name="Scenario">Scenario (TODO)</a>
 
-### Purpose
+#### Purpose
 
 A scenario documents a certain path that is possible to perform a use case. For the "log in" use case this could be "successful log in", "failed because of wrong password", "use forgot password link", etc.
 
-### Rules
+#### Rules
 
 * A folder in the *use case folder* is a *scenario folder* if and only if it contains a valid `scenario.json` file.
 * The folder name of a *scenario folder* must be the URL encoded version of the `name` value in the `scenario.json`. If this is not the case, the folder is not considered a *scenario folder*.
@@ -198,7 +197,7 @@ status      | [String](#String)  | Whether the scenario was successful. A scenar
 properties     | Array of [DocuObject](#DocuObject) | Whatever additional information you would like to attach to the usecase object.
 labels      | [Labels](#Labels)   | Make navigation of scenarios easier, e.g. by labeling scenarios as "happy" (for most important happy path through a use case) or "error" (for error scenarios). Also other cross cutting topics can be put as labels on the scenarios, which makes it easy to find all scenarios concerned with such a specific topic over all use cases.
 
-### Example scenario.json file
+#### Example scenario.json file
 
 ```
 {
@@ -220,20 +219,19 @@ labels      | [Labels](#Labels)   | Make navigation of scenarios easier, e.g. by
 }
 ```
 
+### <a name="Step">Step (TODO)</a>
 
-## Steps of a scenarioo, screenshots and &lt;stepnumber&gt;.json files
-
-### Purpose
+#### Purpose
 
 A scenario is made up of steps. Each step describes one interaction event in your scenario. Several interactions can happen on the same page (or view) of your user interface.
 
-### Rules
+#### Rules
 
 * A *scenario folder* contains the two subfolders `screenshots` and `steps`. If these two folders do not exist, Scenarioo assumes that the scenario does not have any steps but it is still considered a valid scenario.
 * For each step, there is a *step file* named `&lt;stepnumber&gt;.json` in the `steps` folder. The step number is a three digit number. The first step has the number `000`. Therefore the first step is described in `000.json`, the second in `001.json` and so on. There are no gaps between the step numbers. A step exists, as soon as there is a valid *step file* for it.
 * Each step should also have a *screenshot file* named `&lt;stepnumber&gt;.&lt;fileformat&gt;` and residing in the `screenshots` folder. The rules for numbering are the same as for the *step files*. The absence of a *screenshot file* does not make a *step* invalid. The file format can be any web graphics standard, but PNG is recommended in most cases. It is possible to mix different file formats in one scenario.
 
-### Values
+#### Fields
 
 Name | Type | Description
 :---|:---|:---
@@ -243,9 +241,9 @@ html | <a href="#html">Html</a> | HTML source code of the page
 metadata | <a href="#step_metadata">StepMetadata</a> | Further details about the step
 screenAnnotations | <a href="#screen_annotations">ScreenAnnotation</a> | A screen annotation object
 
-### Fields only used inside a step
+#### Fields only used inside a step
 
-#### <a name="page">Page</a>
+##### <a name="Page">Page</a>
 
 The page is there to group several interaction steps that occur on the same page (or view). Therefore you should at least provide a unique identifier for this page or view a step occurs on as the `name` for the page. Usually this is that part of the URL (only!) that identifies the page the user is currently on or the name of the view that is currently displayed or interacted with in this step of the test (jsp-Page names, AngularJS routes, etc. are good candidadtes for page names, but you have to decide depending on your application type).
 
@@ -271,20 +269,13 @@ status | [String](#String) | Whether the test step "failed" and was a "success".
 screenshotFileName | [String](#String) | The name of the step screenshot file inside the `screenshots` directory (usually something like '000.png', where 000 is the index of the step and '.png' the used image format)
 properties | Array of [DocuObject](#DocuObject) | Additional important detail information to describe important properties of a step can be put into this key-value map. This additional information will be displayed in the first section entitled "Step" inside the metadata area on the right side of the step image in the step view. E.g. the current browser URL is a good candidate to store here as a property with name 'URL'. It is recommended to only put the most important properties (that logically belong to the top most metadata section "Step") into this properties object. For more detailed metadata about a step (that you do not want to see in the top metadata section for a step), you should better use `metadata.details` instead, where you can define additional sections for metadata of a step.
 labels | [Labels](#Labels) | Labels for the page
-	
-	
-#### <a name="#html">Html</a>
+
+#### <a name="html">Html</a>
 
 Source code of the page that was displayed in the moment the step was created. Leave it empty if your app is not HTML based (or you can also use it to store other view markup code like XAML here, if you want).
 
 TODO: Describe
 
-#### <a href="#step_metadata">
-
-TODO: Add table
-
-  * `metadata.details` (complex type): Add any interesting additional metadata information in this generic data structure (see [Details](Details) for more information about structure and types of possible content). For each property in this key-value map (which can contain complex objects as values) an own section will be displayed below the "Step" section in the metadata area on the right side of the step image in the step view. E.g. it can be used for adding information about backend calls that have been called in this specific step (to render the current screen) and many other detailed information.
-  
 #### <a href="#screen_annotations">ScreenAnnotation</a>
 
 TODO: Take spec from https://github.com/scenarioo/scenarioo/issues/149 when the story is finished
@@ -292,9 +283,6 @@ TODO: Take spec from https://github.com/scenarioo/scenarioo/issues/149 when the 
 ### Example step file
 
 -> TODO
-
-
-
 
 ## Data Types
 
