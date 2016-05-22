@@ -23,7 +23,7 @@ The following explanations should give an overview about the purpose of each of 
 
 For more general information about JSON, see [http://json.org](http://json.org)
 
-Please refer to the linked more detailed entity descriptions explaining all data that you can store inside each of this entity objects.
+Please refer to the linked entity descriptions explaining all fields of those entity objects in more details.
 
 Entity Type | Description  | Storage Format
 :---|:---|:---
@@ -42,11 +42,11 @@ Following image gives an overview about this additional data types that can be a
 
 Entity Type | Contained in | Description
 :---|:---|:---
+[Labels](#Labels) | Use Case, Scenario, Step, Page | Some important scenarioo entity objects have the ability to get labels attached. Labels are an array of special label strings. Each label string is a unique keyword to mark an object with a label. Labels can be searched for in the Scenarioo Viewer and can even be used in URLs or in the UI as filter criterias in some places.
 [Properties](#Properties) | All Entities: Branch, Build, Use Case, Scenario, Step, Page, DocuObject | Every entity object in the scenario documentation model can have arbitrary additional properties, which are application specific attributes to add to those objects (basically key-value-pairs). Properties are stored as arrays of `DocuObject`. Each property must have a required unique `labelKey` representing the name of that property.
 [Sections](#Sections) | Use Case, Scenario, Step | Most important objects in a scenarioo documentation can become more big and more complex and therefore even have the ability to group additional documentation data in so called `sections`. Every section is again a `DocuObject`. The required `labelKey` of each section is the title of the collapsable section inside which this data will be visualized in the documentation.
 [Items](#Items) | DocuObject | A generic docu object can even have more related objects as so called `items`. Items is just an array of related `DocuObject`. Each entry can have an optional `labelKey` which represents the label of the relation. Items are important to build `DocuObject` data structures like lists or trees in your documentation data. Like that your own application specific objects can have other related items, just like the scenarioo entities, e.g. like a use case that has scenarios as related items.
-[DocuObject](#DocuObject) | Properties, Sections or Items | You can describe arbitrary application specific documentation data as generic DocuObjects. A docu object can be just a simple string `value` to display in the documentation, or it can even have a `type` to group documenation objects of same type and make them more easily navigatable in the documentation (e.g. navigate through all tests refering to the same object of a specific `id` and `type`). A `DocuObject` can again have nested `Properties` or `Items` to describe more complex objects and data structures.
-[Labels](#Labels) | Use Case, Scenario, Step, Page | Some important scenarioo entity objects have the ability to get labels attached. Labels are an array of special label strings. Each label string is a unique keyword to mark an object with a label. Labels can be searched for in the Scenarioo Viewer and can even be used in URLs or in the UI as filter criterias in some places.
+[DocuObject](#DocuObject) | Properties, Sections or Items | You can describe arbitrary application specific documentation data as generic DocuObjects. A docu object can be just a simple string `value` to display in the documentation, or it can even have a `type` to group documenation objects of same type and make them more easily navigatable in the documentation (e.g. navigate through all tests refering to the same object of a specific `id` and `type`). A `DocuObject` can again have nested `DocuObject` objects inside their `Properties` or `Items` to describe more complex objects and data structures.
 
 ##File System Structure
 
@@ -60,7 +60,9 @@ You can find a full reference example of such a scenarioo documentation data dir
 
 [Scenarioo Documentation Referecne Example](./reference-example)
 
-All libraries should be tested to be able to generate exactly this same example, to validate their feature completeness.
+All libraries are tested to be able to generate exactly this same reference example output, to validate their feature completeness.
+
+Also the scenarioo viewer web application is tested against this reference example to validate it can handle all data contained as expected.
 
 ## Entities and their fields
 
@@ -68,13 +70,12 @@ The following sections describe for each entity how they are stored and what fie
 
 ### <a name="Branch">Branch</a>
 
-**Purpose:** Document different development branches or product versions of your software system under development as so called `branches`.
+**Purpose:** Document different development branches or product versions of your software system under development.
 
 **Location in File Sytem:**
 * Directory in the *documentation root* with a `branch.json` file inside.
 * The directory name of a *branch directory* must be the same as the field `id` inside the `branch.json`.
 * All other directories that do not conform to these rules will be ignored by the Scenarioo viewer.
-
 
 **Fields of `branch.json`:**
 
@@ -100,7 +101,6 @@ properties  | [Properties](#Properties) | For additional properties to add arbit
     ]
 }
 ```
-
 
 ### <a name="Build">Build (TODO)</a>
 
