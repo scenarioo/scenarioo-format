@@ -37,59 +37,41 @@
       "page-label-1"
     ]
   },
+  "labels": [ "example-label-1", "example-label-2"],
   "visibleText": "just some dummy html code",
   "screenAnnotations": [
     {
       "style": "CLICK",
       "clickAction": "TO_NEXT_STEP",
+      "title": "Clicked 'Submit'",
+      "description": "the user clicked the button with text 'Submit'",
       "region": {
-        "x": 0,
-        "y": 0,
+        "x": 20,
+        "y": 20,
         "width": 200,
         "height": 100
       },
       "properties": [
         {
-          "labelKey": "simpleProperty",
-          "value": "some value"
-        },
-        {
-          "labelKey": "complexObjectProperty",
-          "value": "Complex Object",
-          "id": "complex-object-1",
-          "type": "ComplexObject",
-          "properties": [
-            {
-              "labelKey": "objectProperty",
-              "value": "any value"
-            }
-          ],
-          "items": [
-            {
-              "value": "Sub Object A",
-              "type": "ComplexObject"
-            },
-            {
-              "value": "Sub Object B",
-              "type": "ComplexObject"
-            }
-          ]
+          "labelKey": "elementLocator",
+          "value": "#submit-button"
         }
       ]
     },
     {
-      "style": "CLICK",
+      "style": "INFO",
       "clickAction": "TO_URL",
-      "clickActionUrl": "http://blabla.com/blubbi",
+      "clickActionUrl": "http://external-example-application-or-documentation-this-button-jumps-to.ch",
+      "clickActionText": "External Docu",
+      "screenText": "This is an information pointing to an external docu.",
       "region": {
-        "x": 0,
-        "y": 0,
+        "x": 20,
+        "y": 220,
         "width": 200,
         "height": 100
       }
     }
   ],
-  "labels": [ "example-label-1", "example-label-2"],
   "properties": [
     {
       "labelKey": "url",

@@ -343,9 +343,14 @@ properties  | [Properties](#Properties): Array of [DocuObject](#DocuObject) | Fo
 
 Name | Type / Format | Description  | Rules
 :---|:---|:---|:---
-
-TODO        | TODO add missing fields here |
-description | [String](#String)  | A short description text to be displayed for this screen annotation in its popup dialog | Optional
+region  | [ScreenRegion](#ScreenRegion) | Rectangular area (x, y, width, height) on the screenshot that is annotated / highlighted. | Required
+style |	[ScreenAnnotationStyle](#ScreenAnnotationStyle) | Enum value that defines what is the meaning of this annotation and how it is styled. Basically each annotation style is styled with a different annotation icon. Can be one of: `DEFAULT`, `HIGHLIGHT`, `INFO`, `WARN`, `ERROR`, `EXPECTED`, `CLICK`,  `KEYBOARD`, `NAVIGATE_TO_URL` | Optional (if not set, the `DEFAULT` is taken as style)
+title | [String](#String) | Title for the info popup that can be opened when clicking on a screen annotation | Optional (but recommended)
+description | [String](#String) | Description text for the annotation that is displayed inside info popup of the annotation | Optional (but recommended)
+screenText | [String](#String) | a text that is displayed inside the rectangular region on the screen | Optional
+clickAction | [ScreenAnnotationClickAction](#ScreenAnnotationClickAction) | You can set, that something special should happen, when clicking on a screen annotation. `TO_NEXT_STEP` means to go to the next step when annotation is clicked. `TO_URL` means to open an external url defined in `clickActionUrl` when clicking on the annotation. No value means that the info popup is opened when clicking inside the annotation (as well as when clicking the annotation icon). | Optional
+clickActionUrl | [String](#String) | An url to open for clickAction = `TO_URL`, when the annotation is clicked | Optional, but required if clickAction is `TO_URL`
+clickActionText | [String](#String) | A text to display as tooltip on the screen annotation, for screen annotations that have a click action, to explain where the annotation is browsing to, when clicked. Same text will also be displayed as a link in the info popup on the annotation, to do the same click acion from there. If not set, a meaningful default will be automatically displayed. | Optional (recommended at least for annotations having a click action URL, to describe what this URL points to)
 properties  | [Properties](#Properties): Array of [DocuObject](#DocuObject) | For additional properties to add arbitrary appplication specific docu data as attributes of this screen annotation. Displayed in the viewer inside the popup dialog that can be opened on each screen annotation right below the other direct field values of a screen annotation. | Optional
 
 **Example `screenAnnotations` (as part of a step):**
@@ -355,6 +360,8 @@ properties  | [Properties](#Properties): Array of [DocuObject](#DocuObject) | Fo
         {
           "style": "CLICK",
           "clickAction": "TO_NEXT_STEP",
+          "title": "Clicked 'Submit'",
+          "description": "the user clicked the button with text 'Submit'",
           "region": {
             "x": 20,
             "y": 20,
@@ -369,9 +376,11 @@ properties  | [Properties](#Properties): Array of [DocuObject](#DocuObject) | Fo
           ]
         },
         {
-          "style": "CLICK",
+          "style": "INFO",
           "clickAction": "TO_URL",
           "clickActionUrl": "http://external-example-application-or-documentation-this-button-jumps-to.ch",
+          "clickActionText": "External Docu",
+          "screenText": "This is an information pointing to an external docu.",
           "region": {
             "x": 20,
             "y": 220,
