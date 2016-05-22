@@ -7,7 +7,7 @@ var step = {
 
     index: 0,
 
-    id: "", // optional to overrule the usual URL schema for steps which is "{pageName}/{pageOccurenceId}/{stepInPageIndex}", with id set a step is available under "{stepId}"
+    id: "my-step-id-0", // optional to overrule the usual URL schema for steps which is "{pageName}/{pageOccurenceId}/{stepInPageIndex}", with id set a step is available under "{stepId}"
 
     name: "optional name", // optional: to be consistent, because all other objects have a name (short text describing current step)
 

@@ -75,18 +75,18 @@ The following sections describe for each entity how they are stored and what fie
 **Location in File Sytem:**
 * Directory in the *documentation root* with a `branch.json` file inside.
 * The directory name of a *branch directory* must be the same as the field `id` inside the `branch.json`.
-* All other directories that do not conform to these rules will be ignored by the Scenarioo viewer.
+* All other directories that do not conform to these rules will be ignored by the Scenarioo Viewer.
 
 **Fields of `branch.json`:**
 
 Name | Type / Format | Description  | Rules
 :---|:---|:---|:---
 name        | [String](#String)  | Display name for this branch. Use something that identifies your branch, e.g. "Release 2014-10-25", "Version 3.1", "trunk" or "123-some-super-new-feature". | Required
-id          | [Identifier-String](#identifier_string) | Identifier used for this object, if not set explicitly by the user, libraries will calculate it from `name` by replacing unallowed characters | Required (but calculated by Libraries from `name`, if not set), must be the same as the directory name.
+id          | [Identifier-String](#identifier_string) | Identifier used for this branch object in URLs | Required (but calculated by Libraries from `name`, if not set), must be the same as the directory name.
 description | [String](#String)  | A short description of the purpose of this branch, what version of your application does this branch contain or document. | Optional
-properties  | [Properties](#Properties) | For additional properties to add arbitrary appplication specific docu data | Optional
+properties  | [Properties](#Properties): Array of [DocuObject](#DocuObject) | For additional properties to add arbitrary appplication specific docu data | Optional
 
-**Example branch.json file:**
+**Example `branch.json` file:**
 
 ```
 {
@@ -102,191 +102,341 @@ properties  | [Properties](#Properties) | For additional properties to add arbit
 }
 ```
 
-### <a name="Build">Build (TODO)</a>
+### <a name="Build">Build</a>
 
-#### Purpose
+**Purpose:** Container for all documentation of your software generated during one build run in your automated build system (one point in time, one software revision)
 
-You probably want to run a regular build for generating the documentation data. For this purpose, each branch is structured in a number of builds. Each run of all your tests and a belonging fully generated scenarioo documentation of your application is called a *build*.
+**Location in File Sytem:**
+* Directory inside *parent branch directory* with a `build.json` file inside.
+* The directory name of a *entity directory* must be the same as the field `id` inside the `build.json`.
+* All other directories that do not conform to these rules will be ignored by the Scenarioo Viewer.
 
-#### Rules
+**Fields of `build.json`:**
 
-* A folder in the *branch folder* is a *build folder* if and only if it contains a valid `build.json` file.
-* The folder name of a *build folder* must be the URL encoded version of the `name` value in the `build.json`. If this is not the case, the folder is not considered a *build folder*. 
-* It is allowed to have other folders that are not *build folders* in a *branch folder*. They are ignored by Scenarioo.
+Name | Type / Format | Description  | Rules
+:---|:---|:---|:---
+name        | [String](#String)  | Display name of your build (will be displayed together with the build date). Use something short that identifies your build run, e.g `CI Build 128` or `Nightly 42`. | Required
+id          | [Identifier-String](#identifier_string) | Identifier used for this entity in URLs. | Required (but calculated by libraries from `name`, if not set), must be the same as the directory name.
+description | [String](#String)  | A short description text | Optional
+date        | [Datetime](#Datetime)    | Start date & time of the build (as a timestamp) | Optional
+revision    | [String](#String)  | the revision number of the tested and documented software in your version control system (e.g. changeset number) | Optional
+status      | [String](#String) | Whether the build was a `success` or `failed` or any application specific other build status. Scenarioo only recognizes `failed` and `success` as known status values, all other values will be treated as kind of unknown or warning states and are displayed in orange in the Viewer. | Optional (Scenarioo Viewer server will calculate it from status of contained use cases, if the status is not set)
+properties  | [Properties](#Properties): Array of [DocuObject](#DocuObject) | For additional properties to add arbitrary appplication specific docu data | Optional
 
-#### Fields
-
-Name | Type | Description
-:---|:---|:---
-name        | [Identifier-String](#identifier_string) | **Required.** Use something that reflects the uniqueness and order of your builds, e.g. the timestamp or a build sequence number.
-date        | [Datetime](#Datetime)    | Start date / time of the build (as a timestamp) --> TODO: Specify exact format
-revision    | [String](#String)  | the revision number in your version control system (e.g. changeset number).
-status      | [String](#String)  | Whether the build was a `success` or `failed`. If the status is left empty, Scenarioo will calculate it from the states of contained use cases and their scenarios. Scenarioo by default (if not configured otherwise) only supports "failed" and "success" as known status values. All other status values are treated as not successful and displayed in orange.
-properties     | Array of [DocuObject](#DocuObject) | Whatever additional information you would like to attach to the build object.
-
-
-#### Example build.json file
+**Example `build.json` file:**
 
 ```
-{
-	"name" : "2014-01-20",
-	"revision" : "1290FE2",
-	"date" : "2014-01-20T00:00:00+01:00",
-	"status" : "success",
-	"properties" {
-		"build trigger" : "manual",
-		"build run duration" : "14 minutes"
-	}
-}
+    {
+        "id": "CI-Build-142",
+        "name" : "CI Build 142",
+        "description": "Last commit: Merged with master",
+        "revision" : "1.0.4-1290FE2",
+        "date" : "2014-01-20T00:00:00+01:00",
+        "status" : "success",
+        "properties" {
+            "trigger" : "manual",
+            "duration" : "14 min 12 sec"
+        }
+    }
+```
+
+### <a name="Use-Case">Use Case</a>
+
+**Purpose:** A function of your software that is a typical use case of your software, that you want to document, should reflect a user goal the user can accomplish with your software, should not be to fine granular and reflect the business or even better the user's view.
+
+**Location in File Sytem:**
+* Directory inside *parent build directory* with a `usecase.json` file inside.
+* The directory name of a *use case directory* must be the same as the field `id` inside the `usecase.json`.
+* All other directories that do not conform to these rules will be ignored by the Scenarioo Viewer.
+
+**Fields of `usecase.json`:**
+
+Name | Type / Format | Description  | Rules
+:---|:---|:---|:---
+name        | [String](#String)  | Display name. Use something that identifies your use case. Keep this short and use the description for more details. Typical examples are "Order Pizza", "Transfer Money", "Configure Profile", "Task - Create", "Task - Delete" ( as the later examples show, we recommend to group use cases that belong to the same subject, by using the subject as the prefix of the use case name) | Required
+id          | [Identifier-String](#identifier_string) | Identifier used for this use case in URLs. In case you often change the names of your use cases, we recommend to set some ids explicitly for your use cases that you won't change over time. | Required (but calculated by libraries from `name`, if not set), must be the same as the directory name.
+description | [String](#String)  | This should give a short description of the use case from a business perspective. All the use case descriptions together should give a good high level overview of the functionality your software offers. | Optional
+status      | [String](#String)  | Whether the use case was a `success` or `failed` or any application specific other status. Scenarioo only recognizes `failed` and `success` as known status values, all other values will be treated as kind of unknown or warning states and are displayed in orange in the Viewer. | Optional (Scenarioo Viewer server will calculate it from status of contained scenarios, if the status is not set)
+labels      | [Labels](#Labels) | Add some categories that are important to your use cases as labels. As an example you could label all use cases with "admin" that can only be performed with the admin role. | Optional
+properties  | [Properties](#Properties): Array of [DocuObject](#DocuObject) | For additional properties to add arbitrary appplication specific docu data as important attributes of this entity (displayed in the viewer on an object's details page right below the other direct field values of this object) | Optional
+sections | [Sections](#Sections): Array of [DocuObject](#DocuObject) | For even more documentation sections to be added to the documentation of this object. Every section must at least have a `labelKey` as the section title and can be any [DocuObject](#DocuObject) with contained arbitrary appplication specific docu data. Use this for special more detailed aspects of this entity that do not belong logicaly to the direct top level attributes (=properties) of it. | Optional
+
+**Example `usecase.json` file:**
+
+```
+    {
+    	"name" : "Find Article",
+    	"id": "Find-Article",
+    	"description" : "User wants to find an article page about a certain topic or certain content.",
+    	"labels" : [
+    		"public"
+    	],
+    	"properties" : {
+    		"Test-Class" : "org.wiki.example.webtests.FindArticleWebTest"
+    	},
+    	"sections" : {
+    	    "labelKey": "Requirements",
+    	    "value": "Could be any value or even long text or data structure, like epics, user stories, etc. that give more information about the requirements of this use case ... you can add arbitrary DocuObject data here ..."
+    	}
+
+    }
+```
+
+### <a name="Scenario">Scenario</a>
+
+**Purpose:** Documents one user interaction flow through a use case. Every use case should be typically tested and documented by several such scenarios. you should not only test and document the happy pathes, but also some alternative scenario pathes (e.g. when the user enters some invalid data and then corrects it, because the system tells hom so) or even exceptional scenario pathes (like when the user can not continue, because some exception occurs, like some important precondition is violated or the use case can not be completed, because some backend system is not available). For a good test design and also documentation design it is essential to focus on the most important key scenarios for each use case here and not have too much test scenarios for every little detail that will clutter your documentation.
+
+**Location in File Sytem:**
+* Directory inside *parent use case directory* with a `scenario.json` file inside.
+* The directory name of a *scenario directory* must be the same as the field `id` inside the `scenario.json`.
+* All other directories that do not conform to these rules will be ignored by the Scenarioo Viewer.
+
+**Fields of `scenario.json`:**
+
+Name | Type / Format | Description  | Rules
+:---|:---|:---|:---
+name        | [String](#String)  | Display name. Use something that identifies your scenario. Keep this short and use the description for more details. Some examples for "Order Pizza" use case scenarios: "new user can order", "existing user can order", "exception when no mozzarella available". <br/><br/>Sometimes it may help to use some special prefixes for the names, such that the alphabetical order of the scenarios inside a use case makes sense from a documentation point of view. | Required
+id          | [Identifier-String](#identifier_string) | Identifier used for this entity in URLs.  In case you often change the names of your scenarios, we recommend to set some ids explicitly for your scenarios that you won't change over time between several builds. | Required (but calculated by libraries from `name`, if not set), must be the same as the directory name.
+description | [String](#String)  | A short description text to explain what this scenario tests and documents. | Optional
+status      | [String](#String)  | Whether the scenario was a `success` or `failed` or any application specific other status. Scenarioo only recognizes `failed` and `success` as known status values, all other values will be treated as kind of unknown or warning states and are displayed in orange in the Viewer. E.g. for test scenarios it makes sometimes sense to use other statuses like e.g. "pending" or "ignored" for tests that are currently marked as ignored or under construction.| Optional (but it is highly recommended to set at least "success" for scenarios that have been successfully executed and "failed" for scenarios that had an error during test execution)
+labels      | [Labels](#Labels)   | Add some categories that are important to your scenarios as labels. As an example you could label happy path scenarios as "happy" and exceptional scenarios as "exceptional". Also other cross cutting topics can be put as labels on the scenarios, which makes it easy to find all scenarios concerned with such a specific topic over all use cases. | Optional
+properties  | [Properties](#Properties): Array of [DocuObject](#DocuObject) | For additional properties to add arbitrary appplication specific docu data as important attributes of this entity (displayed in the viewer on an object's details page right below the other direct field values of this object) | Optional
+sections | [Sections](#Sections): Array of [DocuObject](#DocuObject) | For even more documentation sections to be added to the documentation of this object. Every section must at least have a `labelKey` as the section title and can be any [DocuObject](#DocuObject) with contained arbitrary appplication specific docu data. Use this for special more detailed aspects of this entity that do not belong logicaly to the direct top level attributes (=properties) of it. | Optional
+
+**Example `scenario.json` file:**
+
+```
+   {
+        "name" : "Multiple Results",
+        "id": "Multiple-Results",
+    	"description" : "User searches for text and finds multiple pages that contain this text.",
+    	"status" : "success",
+    	"labels" : [
+            "happy"
+        ],
+    	"properties" : {
+    		"User Role" : "not authenticated",
+    		"Test": "FindArticleWebTest.multipleResults"
+    	},
+    	"sections": [
+    	    {
+    	        "labelKey": "Test Code",
+    	        "value": "```\n // just an example how you could even fill in your test code to the documentation.\n searchPage.search('text available on multiple pages'); \n searchResultPage.expectMultipleResultsFound(); \n ```"
+            }
+    	]
+    }
+```
+
+### <a name="Step">Step</a>
+
+**Purpose:** A step is an important interaction event or state inside a test scenario that is documented. A scenario is made up of several steps that are taken during the test execution. Several steps can happen on the same page (or view) of your user interface.
+
+**Location in File Sytem:**
+* Each step is documented in a json file contained in directory `steps` inside the *parent scenario directory*.
+* Step files have the same name as the `index` of the step, but formatted to 3 digits: `000.json`, `001.json` etc.
+* Usually a step has a screenshot attached, screenshots are stored in separate directory `screenshots` inside the *parent scenario directory*. Also the screenshot file of each step has to have the same index of that step as a file name in three digit format, e.g. `000.png` or `001.jpeg`. Currently scenarioo supports PNG or Jpeg as screenshot formats (or even other standard web graphics migth work, but PNG is recommended in most cases). A screenshot for a step is optional but recommended.
+* Optionaly you can also store the HTML source for a step in a separate directory `html` inside the *parent scenario directory*. Also the html file of each step has to have the same index of that step as a file name in three digit format, e.g. `000.html` for the first step.
+* If the folder `steps` is missing or does not contain any step files for a scenario, then Scenarioo will still display this scenario, but simply without steps.
+
+**Fields inside a *step json file*:**
+
+Name | Type / Format | Description  | Rules
+:---|:---|:---|:---
+index       | Integer | A simple integer value that defines the index of the step. Sequential number, starting with 0 for the first step, 1 for second step and so on, no gaps allowed. | Required, unique for each step
+name        | [String](#String)  | Short display name for the step. Short explanation about this step (if easily available from your tests) | Optional
+id          | [Identifier-String](#identifier_string) | Identifier used for this step in URLs. Set this if you can set a unique and more stable id for each step, that stays more stable for the same step than the generated id, for the same step over several build runs, even if the scenario is changed. | Optional, Unique for each step inside same scenario (if not available, the server will calculate a unique id for your step from page name, occurence of that page in your scenario and index of the step inside the same page)
+description | [String](#String)  | More longer description text of a step, if you want to add additional textual description for steps. | Optional
+title       | [String](#String) | The title that is currently displayed for the screen in the browser window title bar or as a title on the page itself (this makes it possible to search for texts inside this titles in scenarioo). | Optional
+visibleText | [String](#String) | Can be used to store all visible text on current screen that is used for full text search inside scenarioo | Optional
+page        | [Page](#Page) | Information about the page (or view or dialog or page object ...) on which that interaction step occured. This is used to group steps that belong logically together also over several scenarios and use cases. | Optional (but recommended)
+status      | [String](#String) | Whether the test step `failed` or was a `success` or any application specific other status. Scenarioo only recognizes `failed` and `success` as known status values, all other values will be treated as kind of unknown or warning states and are displayed in orange in the Viewer. | Optional
+labels      | [Labels](#Labels)   | Add some categories that are important to your steps as labels to mark steps of special kinds. | Optional
+screenAnnotations | Array of [ScreenAnnotation](#ScreenAnnotation) | Several screen annotations to highlight special areas in the screenshot of this step and add visual information to the screenshot as annotations. Can be used to visualize and highlight how the user interacted with the user interface in this step. | Optional
+properties  | [Properties](#Properties): Array of [DocuObject](#DocuObject) | For additional properties to add arbitrary appplication specific docu data as important attributes of this entity (displayed in the viewer on an object's details page right below the other direct field values of this object). One important property that you might want to add to each step, might for example be the URL in current browser address field. | Optional
+sections | [Sections](#Sections): Array of [DocuObject](#DocuObject) | For even more documentation sections to be added to the documentation of this object. Every section must at least have a `labelKey` as the section title and can be any [DocuObject](#DocuObject) with contained arbitrary appplication specific docu data. Use this for special more detailed aspects of this entity that do not belong logicaly to the direct top level attributes (=properties) of it. | Optional
+
+**Example *step json file*:**
+
+```
+    {
+      "index": 0,
+      "name": "browsed to search page",
+      "title": "My Wiki Search",
+      "status": "success",
+      "page": {
+        "name": "search-page.php",
+      },
+      "visibleText": "Welcome to my search page of my wiki. Search: ",
+      "labels": [ "empty-search" ],
+      "properties": [
+        {
+          "labelKey": "url",
+          "value": "http://www.my-example-wiki-search.ch/search-page.php"
+        }
+      ],
+      "sections": [
+        {
+          "labelKey": "Service Calls",
+          "items": [
+            {
+              "value": "Service 1",
+              "type": "Service",
+              "properties": [
+                {
+                  "labelKey": "callDuration",
+                  "value": "43 ms"
+                }
+              ]
+            },
+            {
+              "value": "Service 2",
+              "type": "Service",
+              "properties": [
+                {
+                  "labelKey": "callDuration",
+                  "value": "259 ms"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+```
+
+### <a name="Page">Page</a>
+
+**Purpose:** Describe a page or view or dialog on which an interaction step occured. This is used to group steps that belong logically together or happen on the same page to navigate between them or even find them in other scenarios or use cases.
+
+**Location in File Sytem:**
+* A page is simply stored inside a [Step](#Step) as part of the *step json file* inside field `page`.
+
+**Fields of `page`:**
+
+Name | Type / Format | Description  | Rules
+:---|:---|:---|:---
+name        | [String](#String)  | Display name. Use something that identifies your page. This could be a file name of the source code of your page or your view. For web applications it is usually that part of the URL (only!) that identifies the page the user is currently on (without parameters for content data): jsp-Page names, AngularJS routes, etc. are good candidadtes for page names, but you have to decide depending on your application type. | Required
+id          | [Identifier-String](#identifier_string) | Identifier used for this entity in URLs. | Optional (calculated by server from `name`, if not set).
+description | [String](#String)  | A short description text for this page. | Optional
+labels      | [Labels](#Labels)   | Add some categories that are important to categorize this page as labels to mark all such pages of special kinds. | Optional
+properties  | [Properties](#Properties): Array of [DocuObject](#DocuObject) | For additional properties to add arbitrary appplication specific docu data as important attributes of this page (displayed in the viewer on an object's details page right below the other direct field values of this object) | Optional
+
+**Example `page` (as part of a step object):**
+
+```
+    "page": {
+        "name": "search-page.php",
+        "description": "The main search page",
+        "labels": ["search-page", "php"]
+    }
 ```
 
 
-### <a name="Use-Case">Use Case (TODO)</a>
+### <a name="ScreenAnnotation">ScreenAnnotation</a>
 
-**Purpose:**
+**Purpose:** A step can have several screen annotations in an array to mark special rectangular regions on the screenshot and add information to this regions, like where the user interacted, with what user interface elements, etc.
 
-The documentation is structured into use cases. These use cases should whenever possible reflect the business view. Typical examples are "log in", "send in-app message", "order pizza" or "change profile settings".
+**Location in File Sytem:**
+* A screen annotation is simply stored inside a [Step](#Step) as part of the *step json file* inside the array in field `screenAnnotations`.
 
-**Rules:**
+**Fields of `screenAnnotation`:**
 
-* A folder in the *build folder* is a *use case folder* if and only if it contains a valid `usecase.json` file.
-* The folder name of a *use case folder* must be the URL encoded version of the `name` value in the `usecase.json`. If this is not the case, the folder is not considered a *use case folder*.
-* It is allowed to have other folders that are not *use case folders* in a *build folder*. They are ignored by Scenarioo.
+Name | Type / Format | Description  | Rules
+:---|:---|:---|:---
 
-#### Fields
-  
-Name | Type | Description
-:---|:---|:---
-name        | [Identifier-String](#identifier_string)  | **Required.** Use case name, e.g. "log in" or "change profile settings". Keep this short and use the description field for more information.
-description | [String](#String)  | This should give a short description of the use case from a business perspective. All the use case descriptions together should give a good high level overview of the functionality your software offers.
-status      | [String](#String)  | Whether the use case was a "success" or "failed". If not set explicitly Scenarioo will calculate it later from all contained scenarios (it will assume "success" if all scenarios inside the use case are a "success")
-properties     | Array of [DocuObject](#DocuObject) | Whatever additional information you would like to attach to the usecase object.
-labels      | [Labels](#Labels) | Add some info that is interesting on the use case level. E.g. you could label all use cases with "admin" that can only be performed with the admin role.
+TODO        | TODO add missing fields here |
+description | [String](#String)  | A short description text to be displayed for this screen annotation in its popup dialog | Optional
+properties  | [Properties](#Properties): Array of [DocuObject](#DocuObject) | For additional properties to add arbitrary appplication specific docu data as attributes of this screen annotation. Displayed in the viewer inside the popup dialog that can be opened on each screen annotation right below the other direct field values of a screen annotation. | Optional
 
-#### Example usecase.json file
+**Example `screenAnnotations` (as part of a step):**
 
 ```
-{
-	"name" : "Find Article",
-	"description" : "User wants to find a Wikipedia article page about a certain topic",
-	"properties" : {
-		"Webtest Class" : "org.wikipedia.webtests.FindFindArticleUITest"
-	},
-	"labels" : [
-		"public"
-	]
-}
+    "screenAnnotations": [
+        {
+          "style": "CLICK",
+          "clickAction": "TO_NEXT_STEP",
+          "region": {
+            "x": 20,
+            "y": 20,
+            "width": 200,
+            "height": 100
+          },
+          "properties": [
+            {
+              "labelKey": "elementLocator",
+              "value": "#submit-button"
+            }
+          ]
+        },
+        {
+          "style": "CLICK",
+          "clickAction": "TO_URL",
+          "clickActionUrl": "http://external-example-application-or-documentation-this-button-jumps-to.ch",
+          "region": {
+            "x": 20,
+            "y": 220,
+            "width": 200,
+            "height": 100
+          }
+        }
+    ]
 ```
 
+### <a name="DocuObject">DocuObject</a>
 
-### <a name="Scenario">Scenario (TODO)</a>
+**Purpose:** A `DocuObject` is an object that describes any additional generic data value or even more complex data objects. It is very powerful and can be used to model arbitrary additional application specific data structures.
 
-#### Purpose
+**Location in File Sytem:**
+* DocuObjects can be attached to every other entity in the scenarioo docu model and are stored as part of all other json files. you can attach DocuObjects on other entities inside the fields `properties` (see [Properties](#Properties)), `sections` (see [Sections](#Sections)) or as related items of other DocuObjects inside `items` (see [Items](#Items)).
 
-A scenario documents a certain path that is possible to perform a use case. For the "log in" use case this could be "successful log in", "failed because of wrong password", "use forgot password link", etc.
+**Fields of `DocuObject`:**
 
-#### Rules
+Name | Type / Format | Description | Rules
+:---|:---|:---|:---
+labelKey | [String](#String) | Kind of the identifier (key) and the label text for the property or the relation to an item. Can be used for configuration purpose, e.g. to select some special property values to display in some special views e.g. as table columns. And this field is special since it does not realy belong to the information value object, meaning, that same object value, even typed value, can occur with multiple different label keys of course. | For objects in [Properties](#Properties) and in [Sections](#Sections) this is required, for other objects as in [Items](#Items) it is optional. The `labelKey` must be unique inside the objects parent Properties- or Sections-collection, furthermore the key should be even unique inside the parent object for all its children objects to identify the relation to that object (the property or section, or optionaly even the item).
+value | [String](#String) | display text to display as value | Optional, recommended for most objects that have a well defined value or display text, except for collection objects like a list of subitems that do not have a value and identity on their own.
+type | [Identifier-String](#identifier_string) | A type identifier to group different type of objects, examples: UiElement, PageObject, Service, Feature, Story, ... Whatever types make sense to be defined in your application. Scenarioo Viewer can display typed objects in additional search tabs, to see all objects of one or several types in one view to easily search for them. | Optional
+id | [Identifier-String](#identifier_string) | A unique identifier for this typed object that is not allowed to contain some special characters. If not set explicitly the libraries will calculate this identifier for you from the object's value by sanitizing unallowed characters. This id will not be displayed but will be used in URLs and internaly for identification and comparison of objects and for storing the objects. It is recommended to keep this field unchanged for object's when they change their value (=display text), to keep trackable how this documented objects evolve between different builds. | Optional. Objects that have a type will get an id automatically assigned from the server, that is calculated from `name`, in case `id` is not set explicitly.
+properties | [Properties](#Properties): Array of [DocuObject](#DocuObject) | For complex objects having again `DocuObject`s for its attribute values | Optional
+items | [Items](#Items): Array of [DocuObject](#DocuObject) | For objects that contain other objects as items (e.g. same as a usecase that contains scenarios), those objects can contain again `DocuObject`s  as its items. `labelKey` is not required inside this objects contained here. | Optional
 
-* A folder in the *use case folder* is a *scenario folder* if and only if it contains a valid `scenario.json` file.
-* The folder name of a *scenario folder* must be the URL encoded version of the `name` value in the `scenario.json`. If this is not the case, the folder is not considered a *scenario folder*.
-* It is allowed to have other folders that are not *scenario folders* in a *use case folder*. They are ignored by Scenarioo.
-
-#### Fields
-
-Name | Type | Description
-:---|:---|:---
-name        | [Identifier-String](#identifier_string)  | **Required.** Scenario name, e.g. "successful log in"
-description | [String](#String)  | Here you can add further information about what's special in a scenario and add further documentation about the logic used in the scenario. E.g. "A successful login is only possible if the account is already activated.".
-status      | [String](#String)  | Whether the scenario was successful. A scenario usually corresponds to one test case. Therefore this just says whether the test case was green. Scenarioo by default (if not configured otherwise) only supports "failed" and "success" as known status values.
-properties     | Array of [DocuObject](#DocuObject) | Whatever additional information you would like to attach to the usecase object.
-labels      | [Labels](#Labels)   | Make navigation of scenarios easier, e.g. by labeling scenarios as "happy" (for most important happy path through a use case) or "error" (for error scenarios). Also other cross cutting topics can be put as labels on the scenarios, which makes it easy to find all scenarios concerned with such a specific topic over all use cases.
-
-#### Example scenario.json file
-
-```
-{
-	"name" : "find_multiple_results",
-	"description" : "User enters some text and finds multiple pages that contain this text.",
-	"status" : "success",
-	"properties" : {
-		"User Role" : "not authenticated",
-		"Requirements" : [{
-				"name" : "113 - Search Pages"
-			}, {
-				"name" : "114 - Search Content"
-			}
-		]
-	},
-	"labels" : [
-		"happy"
-	]
-}
+**Example `DocuObject` objects (as properties of a step):
 ```
 
-### <a name="Step">Step (TODO)</a>
+    "properties": [
 
-#### Purpose
+        /* Example 1: A simple key value property */
+        {
+            "labelKey": "simpleStringValue",
+            "value": "a textual information"
+        },
 
-A scenario is made up of steps. Each step describes one interaction event in your scenario. Several interactions can happen on the same page (or view) of your user interface.
+        /* Example 2: More complex description of a typed object (with nested DocuObjects as properties) */
+        {
+            "labelKey": "exception",
+            "value": "Scenario failed: Element not found",
+            "type": "Exception",
+            "id": "ElementNotFoundException",
+            "properties": [
+                {
+                    "labelKey": "source",
+                    "value": "expect(element.isPresent()).toBe(true)"
+                },
+                {
+                    "labelKey": "exceptionMessage",
+                    "value": "Failed: No element found using locator: By.cssSelector('div#myUndefinedId')"
+                },
+                {
+                    "labelKey": "stackTrace",
+                    "value": "... put the full stack trace here ..."
+                }
+            ]
+        }
+    ]
+```
 
-#### Rules
+For more detailed description and more complex examples, see [`Scenarioo Object Model`](scenarioo_object_model.md).
 
-* A *scenario folder* contains the two subfolders `screenshots` and `steps`. If these two folders do not exist, Scenarioo assumes that the scenario does not have any steps but it is still considered a valid scenario.
-* For each step, there is a *step file* named `&lt;stepnumber&gt;.json` in the `steps` folder. The step number is a three digit number. The first step has the number `000`. Therefore the first step is described in `000.json`, the second in `001.json` and so on. There are no gaps between the step numbers. A step exists, as soon as there is a valid *step file* for it.
-* Each step should also have a *screenshot file* named `&lt;stepnumber&gt;.&lt;fileformat&gt;` and residing in the `screenshots` folder. The rules for numbering are the same as for the *step files*. The absence of a *screenshot file* does not make a *step* invalid. The file format can be any web graphics standard, but PNG is recommended in most cases. It is possible to mix different file formats in one scenario.
-
-#### Fields
-
-Name | Type | Description
-:---|:---|:---
-page        | <a href="#page">Page</a>  | Page Information
-stepDescription | <a href="#stepDescription">StepDescription</a> | Basic details of the step
-html | <a href="#html">Html</a> | HTML source code of the page
-metadata | <a href="#step_metadata">StepMetadata</a> | Further details about the step
-screenAnnotations | <a href="#screen_annotations">ScreenAnnotation</a> | A screen annotation object
-
-#### Fields only used inside a step
-
-##### <a name="Page">Page</a>
-
-The page is there to group several interaction steps that occur on the same page (or view). Therefore you should at least provide a unique identifier for this page or view a step occurs on as the `name` for the page. Usually this is that part of the URL (only!) that identifies the page the user is currently on or the name of the view that is currently displayed or interacted with in this step of the test (jsp-Page names, AngularJS routes, etc. are good candidadtes for page names, but you have to decide depending on your application type).
-
-An object with these fields:
-
-Name | Type | Description
-:---|:---|:---
-name        | [Identifier-String](#identifier_string)  | Name of the page
-properties | Array of [DocuObject](#DocuObject) | Metadata of the page
-labels | [Labels](#Labels) | Labels for the page
-
-#### <a name="#stepDescription">StepDescription</a>
-
-Contains the most important properties to describe a step.
-
-An object with these fields:
-
-Name | Type | Description
-:---|:---|:---
-index | <a href="#integer">Integer</a>  | The number of the step (sequential number, starting with 0 for first step)
-title | [String](#String) | The title that is currently displayed for the screen in the browser window title bar or as a title on the page (this makes it possible to search for texts inside this titles in scenarioo).
-status | [String](#String) | Whether the test step "failed" and was a "success".
-screenshotFileName | [String](#String) | The name of the step screenshot file inside the `screenshots` directory (usually something like '000.png', where 000 is the index of the step and '.png' the used image format)
-properties | Array of [DocuObject](#DocuObject) | Additional important detail information to describe important properties of a step can be put into this key-value map. This additional information will be displayed in the first section entitled "Step" inside the metadata area on the right side of the step image in the step view. E.g. the current browser URL is a good candidate to store here as a property with name 'URL'. It is recommended to only put the most important properties (that logically belong to the top most metadata section "Step") into this properties object. For more detailed metadata about a step (that you do not want to see in the top metadata section for a step), you should better use `metadata.details` instead, where you can define additional sections for metadata of a step.
-labels | [Labels](#Labels) | Labels for the page
-
-#### <a name="html">Html</a>
-
-Source code of the page that was displayed in the moment the step was created. Leave it empty if your app is not HTML based (or you can also use it to store other view markup code like XAML here, if you want).
-
-TODO: Describe
-
-#### <a href="#screen_annotations">ScreenAnnotation</a>
-
-TODO: Take spec from https://github.com/scenarioo/scenarioo/issues/149 when the story is finished
-
-### Example step file
-
--> TODO
 
 ## Data Types
 
@@ -298,7 +448,17 @@ A regular string as defined by the JSON format, all characters in UTF-8 are allo
 
 All fields that are used as identifiers and therefore can be part of a URL have this type, and in this kind of string only usual characters are allowed, no spaces, no slashes and not other special characters, except for `-` and `_`.
 
-Regexp: `[A-Za-z_0-9\-]+`
+**Regexp:** `[A-Za-z_0-9\-]+`
+
+Libraries have to provide a `IdentifierFormat.sanitize`-Function, that can transform a usual String into such an Identifier-String.
+
+Libraries as well as the server will generate missing `id` fields on objects by calculating them automatically from the `name`-fields using this `sanitize`-Function.
+
+The `sanitize` function will replace unallowed characters as following:
+
+ * Replace all diacritics (e.g. ä, ö, ü, é) by according normal characters (a, o, u, e)
+ * Replace slashes (`\` and `/`) by `_`
+ * Replace any other unallowed characters (spaces etc.) by `-`
 
 ### <a name="Datetime">Datetime</a>
 
@@ -322,58 +482,6 @@ The value of a `sections` field is an array of [DocuObject](#DocuObject). Each c
 
 The value of an `items` field is a simple array of [DocuObject](#DocuObject). No special rules apply to the contained docu objects. The array may also be empty or missing.
 
-### <a name="DocuObject">DocuObject</a>
-
-A `DocuObject` is an object that describes any additional generic data value or even more complex data objects.
-
-`DocuObject`s are very powerful and can be used to model arbitrary application specific data structures.
-
-Each `DocuObject` consists of following fields:
-
-Name | Type / Format | Description | Rules
-:---|:---|:---|:---
-labelKey | [String](#String) | Kind of the identifier (key) and the label text for the property or the relation to an item. Can be used for configuration purpose, e.g. to select some special property values to display in some special views e.g. as table columns. And this field is special since it does not realy belong to the information value object, meaning, that same object value, even typed value, can occur with multiple different label keys of course. | For objects in `properties` and in `sections` this is required, for other objects as in `items` it is optional, should be unique inside the parent object for all its properties to identify this property.
-value | [String](#String) | display text to display as value | Optional, recommended for most objects that have a well defined value or display text, except for structural objects like a list of subitems that does not have a value on its own.
-type | [Identifier-String](#identifier_string) | A type identifier to group different type of objects, examples: UiElement, PageObject, Service, Feature, Story, ... Whatever types make sense to be defined in your application. Scenarioo Viewer can display typed objects in additional search tabs, to see all objects of one or several types in one view to easily search for them. | Optional
-id | [Identifier-String](#identifier_string) | A unique identifier for this typed object that is not allowed to contain some special characters. If not set explicitly the libraries will calculate this identifier for you from the object's value by sanitizing unallowed characters. This id will not be displayed but will be used in URLs and internaly for identification and comparison of objects and for storing the objects. It is recommended to keep this field unchanged for object's when they change their value (=display text), to keep trackable how this documented objects evolve between different builds. | Optional
-properties | [Properties](#Properties): Array of [DocuObject](#DocuObject) | For complex objects having again `DocuObject`s for its attribute values | Optional
-items | [Items](#Items): Array of [DocuObject](#DocuObject) | For objects that contain other objects as items (e.g. same as a usecase that contains scenarios), those objects can contain again `DocuObject`s  as its items. `labelKey` is not required inside this objects contained here. | Optional
-
-Some simple examples of valid `DocuObject`s:
-
-```
-
-        /* Example 1: A simple key value property */
-        {
-            labelKey: "simpleStringValue",
-            value: "a textual information"
-        },
-
-        /* Example 2: More complex description of a typed object (with nested DocuObjects as properties) */
-        {
-            labelKey: "exception",
-            value: "Scenario failed: Element not found",
-            type: "Exception",
-            id: "ElementNotFoundException",
-            properties: [
-                {
-                    labelKey: "source",
-                    value: "expect(element.isPresent()).toBe(true)"
-                },
-                {
-                    labelKey: "exceptionMessage",
-                    value: "Failed: No element found using locator: By.cssSelector('div#myUndefinedId')"
-                },
-                {
-                    labelKey: "stackTrace",
-                    value: "... put the full stack trace here ..."
-                }
-            ]
-        }
-
-```
-
-For more detailed description and more complex examples, see [`Scenarioo Object Model`](scenarioo_object_model.md).
 
 # Migration to Format 3.x
 
@@ -411,7 +519,7 @@ Following things are different:
      ```
 
    * Add Object references (former usage of class `ObjectReference`):
-     This is not explicitly modeled as a seprate class anymore, just add your reference as if it was a normal object without any data (on fields `properties` or ìtems`) provided:
+     This is not explicitly modeled as a seprate class anymore, just add your reference as if it was a normal object without any data (on fields `properties` or `ìtems`) provided:
      ```
      // before:
      ObjectReference myObjectRef = new ObjectReference("MyObjectType", "my object name");
