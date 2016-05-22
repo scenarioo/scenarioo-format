@@ -400,7 +400,7 @@ id | [Identifier-String](#identifier_string) | A unique identifier for this type
 properties | [Properties](#Properties): Array of [DocuObject](#DocuObject) | For complex objects having again `DocuObject`s for its attribute values | Optional
 items | [Items](#Items): Array of [DocuObject](#DocuObject) | For objects that contain other objects as items (e.g. same as a usecase that contains scenarios), those objects can contain again `DocuObject`s  as its items. `labelKey` is not required inside this objects contained here. | Optional
 
-**Example `DocuObject` objects (as properties of a step):
+**Example `DocuObject` objects (as properties of a step):**
 ```
 
     "properties": [
