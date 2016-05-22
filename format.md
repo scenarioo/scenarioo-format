@@ -4,8 +4,12 @@ This is the specification of the Scenarioo documentation format. To find out mor
 
 WARNING: This file format is not used in current versions of Scenarioo 2.x. It is the future format for Scenarioo 3.x. For a reference of the Scenarioo 2.x format, please have a look in our [Wiki](https://github.com/scenarioo/scenarioo/wiki/Scenarioo-Writer-Documentation-Format).
 
-This doucmentation is mainly targeted to developers of libraries which can write the scenarioo documentation format. As a user of scenarioo you would probably use one of those libraries that will help you write this format out of your tests.
-Neverteless it can also be very helpful for users of those libraries to understand the format in details, what can be stored where in scenarioo. Therefore we also recommend this documentation format description to be read for users of the scenarioo libraries.
+This doucmentation is targeted to two audiences:
+
+1. Developers of Scenarioo writer libraries that help to write the scenarioo documentation files.
+
+2. Users of those libraries to understand what can be stored where inside the documentation files using the writer libraries in your tests.
+
 
 ## Domain Model Overview
 
