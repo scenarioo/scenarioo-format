@@ -5,6 +5,7 @@
   "status": "success",
   "page": {
     "name": "example/page.html",
+    "description": "description of a page",
     "properties": [
       {
         "labelKey": "simpleProperty",

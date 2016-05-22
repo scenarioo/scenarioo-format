@@ -6,6 +6,7 @@
   "status": "success",
   "page": {
     "name": "example/page.html",
+    "id": "a-page-with-manual-id",
     "labels": [
       "page-label-1"
     ]

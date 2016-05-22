@@ -1,0 +1,29 @@
+{
+  "index": 1,
+  "name": "step with minimal content objects (page and screen annotations)",
+  "page": {
+    "name": "minimal-page.jsp"
+  },
+  "screenAnnotations": [
+    {
+      "region": {
+        "x": 20,
+        "y": 20,
+        "width": 200,
+        "height": 100
+      }
+    },
+    {
+      "description": "screen annotation with minimal properties for a click action",
+      "clickAction": "TO_URL",
+      "clickActionUrl": "http://external-example-application-or-documentation-this-button-jumps-to.ch",
+      "region": {
+        "x": 20,
+        "y": 220,
+        "width": 200,
+        "height": 100
+      }
+    }
+  ],
+
+}
