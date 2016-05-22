@@ -1,11 +1,10 @@
 {
   "index": 0,
-  "id": "my-own-self-defined-step-id-01",
+  "name": "optional step name",
   "title": "My Step Title",
   "status": "success",
   "page": {
     "name": "example/page.html",
-    "id": "example-page-html",
     "properties": [
       {
         "labelKey": "simpleProperty",

@@ -1,0 +1,21 @@
+{
+  "index": 0,
+  "id": "my-own-self-defined-step-id-01",
+  "name": "scenario started",
+  "title": "My Step Title",
+  "status": "success",
+  "page": {
+    "name": "example/page.html",
+    "labels": [
+      "page-label-1"
+    ]
+  },
+  "visibleText": "the text that is visible on this page",
+  "labels": [ "example-label-1", "example-label-2"],
+  "properties": [
+    {
+      "labelKey": "url",
+      "value": "http://www.my-application.ch/example/page.html?id=12"
+    }
+  ]
+}

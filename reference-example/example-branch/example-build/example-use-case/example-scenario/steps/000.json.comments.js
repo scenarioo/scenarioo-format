@@ -9,11 +9,15 @@ var step = {
 
     id: "", // optional to overrule the usual URL schema for steps which is "{pageName}/{pageOccurenceId}/{stepInPageIndex}", with id set a step is available under "{stepId}"
 
+    name: "optional name", // optional: to be consistent, because all other objects have a name (short text describing current step)
+
     title: "Test Step", // optional
 
     status: "success", // optional, free text field, but "success" and "failed" are default keywords for states interpreted as successful and failed, all other states are treated as unknwon or undefined and visualized orange-warnign-style (case sensitive!) [default "failed" and "success" states can be configured in config somehow, but seems to be not considered everywhere in the webapp --> TODO: remove configuration!]
 
     // screenshotFileName is inferred from index (000.png). Lookup is based on supported image types: png, jpeg, jpg, gif, bmp
+
+    labels: ["example-step-label1", "example-step-label-2"],
 
     page: { // optional
         name: "example/page.html", // mandatory
@@ -53,8 +57,6 @@ var step = {
             properties: []
         }
     ],
-
-    labels: ["example-step-label1", "example-step-label-2"],
 
     properties: [
         {
