@@ -3,7 +3,7 @@
 The Scenarioo DocuObject Model allows to add arbitrary application-specific documentation data to any object in the scenarioo model.
 
 Each object in the scenario model has a property `properties` (similar to `details` in scenarioo 2.x model) that can be used to attach additional data attributes to an object.
-This `properties` basically is an array of entries (with `labelKey`, `value` and optionaly some more meta data information) explained in more details in following sections.
+This `properties` basically is an array of entries (with `labelKey`, `value` and optionally some more meta data information) explained in more details in following sections.
 
 Inside such properties you can even store more complex objects of complex data structure, that have a `type` and  which can again contain `properties`. 
 
@@ -18,7 +18,7 @@ Two pictures say more than tousand words:
 
 The first picture above demonstrates how `DocuObject` objects can get attached to different kind of scenarioo docu model entities, either as `properties`(for all entities), or also as `sections` (only for most important entities, like use case, scenario and step).
 
-The following picture demonstrates an example object hierarchy of 5 DocuObjects to demonstarte how this model can be used to model arbitrary application specific documentation data object structures:
+The following picture demonstrates an example object hierarchy of 5 DocuObjects to demonstrate how this model can be used to model arbitrary application specific documentation data object structures:
 
 ![Scenarioo Object Model Example](images/draw.io/scenarioo_docu_object_model_example.png)
  
@@ -46,11 +46,11 @@ Each cell entry can be described as follows:
 If the distinction between `properties`  and `items` is not understandable for you:
 
  * `properties` are simple attributes describing a data object
- * `items` are related items or hierarchical sub items (e.g. like a usecase has several scenarios and a scenario has several steps). Those are used to model lists or even trees of values or objects.
+ * `items` are related items or hierarchical sub items (e.g. like a use case has several scenarios and a scenario has several steps). Those are used to model lists or even trees of values or objects.
  * It is similar to attributes/fields (=`properties`) versus references/associations (=`items`) in the UML model
  * Both have same power concerning what data can be modeled/stored inside, but the visualization (where you see what) will be different
 
-## Model Documenation
+## Model Documentation
 
 Each entry in a `properties` or `items` array is a object of type `DocuObject` that can have the properties as described in details under [DocuObject](README.md#DocuObject)
   
@@ -63,10 +63,10 @@ The following extensive example demonstrates how this model can be used to add c
  
 See [Example JSON of a scenario with object model data](scenarioo_object_model_example.js)
  
-## Design Decissions
+## Design Decisions
 
 > this section tries to summarize a little bit, why the current design is as it is and what arguments we discussed.
-> We did not note all the arguments we discussed at the meetings, so feel free to add more arguments or more împortant things we decidced, in case you remember. Thank you!
+> We did not note all the arguments we discussed at the meetings, so feel free to add more arguments or more important things we decided, in case you remember. Thank you!
 
 1. What were the major architectural drivers for the new design?
 
@@ -78,7 +78,7 @@ See [Example JSON of a scenario with object model data](scenarioo_object_model_e
  
 2. Why do we not simply allow all kind of JSON objects directly to be attached as Details?
  
-    > we discussed about this, but everybody invollved in the last meeting kind of agreed that this has many disadvantages, here some of the arguments ...
+    > we discussed about this, but everybody involved in the last meeting kind of agreed that this has many disadvantages, here some of the arguments ...
 
     * pure JSON model does not allow adding some meta data to each property. Some examples of Metadata we want to be able to store for each property:
         * properties can have a type (we could add features to style different types of properties or objects differently)
@@ -89,11 +89,11 @@ See [Example JSON of a scenario with object model data](scenarioo_object_model_e
         (and therefore using an array of explicit key-value pairs instead of json directly might be more save to keep the order)
  
     * in general we do not consider it good practice to just reserve some properties with special key words for such things 
-        * probably not eaasy to make this explicit in Java or C# in the API while still allowing to pass arbitrary json objects
+        * probably not easy to make this explicit in Java or C# in the API while still allowing to pass arbitrary json objects
         * the user will not be able to use this keys for real documentation data property names anymore 
             (see `labelKey` in our new model instead, which can even contain `type`, `ìd`, `value` etc. as labels where appropriate)
          
-    * Last but not least we not like the idea of allowing any json without restriction, because while this might be easy for JS-library, might not be sooo easy for C# and Java Library.
+    * Last but not least we not like the idea of allowing any json without restriction, because while this might be easy for JS-library, might not be so easy for C# and Java Library.
  
     * more arguments here?
 
@@ -103,10 +103,10 @@ See [Example JSON of a scenario with object model data](scenarioo_object_model_e
     * Since it is a breaking release anyway, we can live with the fact that all old URLs will not be valid anymore on next release
        * Therefore we will only allow characters that can be used without problems in URLs without encoding them for `id` fields: A-Za-z0-9-_ that's it.
        * all other characters will have to be sanitized by the libraries somehow (to be defined).
-       * To still support all old URLs, we could introduce a redirect filter for those requests where unallowed characters are in the requests
+       * To still support all old URLs, we could introduce a redirect filter for those requests where illegal characters are in the requests
 
  * To be consistent, also the usual objects should now get an `ìtems` field, shouldn't they?
-    * No, not needed, because the existing explicit object types of scenarioo allready have explicit modeled sub items (useCase has scenarios, scenario has steps, etc.)
+    * No, not needed, because the existing explicit object types of scenarioo already have explicit modeled sub items (useCase has scenarios, scenario has steps, etc.)
 
  * Do we allow to have properties without a `labelKey`?
      * No
@@ -130,11 +130,11 @@ See [Example JSON of a scenario with object model data](scenarioo_object_model_e
 ## Change History
 
 * 11.04.2016 First draft discussed with @tobiaszuercher @felixmokross @dola 
-* 15.04.2016 @bruderol documented what we disucssed and reworked on the model to refine it to this first proposal here
+* 15.04.2016 @bruderol documented what we discussed and reworked on the model to refine it to this first proposal here
     * I changed that instead of having two levels `{ key: 'bla', value: { value: 'blu', type: 'Service' } }` to simply using flat object items `{ labelKey: 'bla', value: 'blu', type: 'Service' }`
     * I changed names of some fields slightly and documented the example in more details
     * I documented an example object model in the example and created a nice model overview picture to explain it more easy
-    * I tried to document all discussed arguments and important design decissions
+    * I tried to document all discussed arguments and important design decisions
     * the rest should still be as discussed, feel free to give feedback on issue #2 or directly contribute to this model by modifying this file here.
 * 27.04.2016 @bruderol presented the design at the dev team meeting, the model is considered finalized, and will be implemented as described here
 * 09.05.2016 @bruderol cleaned up this docu page, according our further discussions. Model is considered more or less finalized.
