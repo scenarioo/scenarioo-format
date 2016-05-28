@@ -1,6 +1,7 @@
 {
   "index": 0,
   "name": "optional step name",
+  "description": "optional more long step description",
   "title": "My Step Title",
   "status": "success",
   "page": {
