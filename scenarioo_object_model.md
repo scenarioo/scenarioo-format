@@ -52,7 +52,7 @@ If the distinction between `properties`  and `items` is not understandable for y
 
 ## Model Documenation
 
-Each entry in a `properties` or `items` array is a object of type `DocuObject` that can have the properties as described in details under [DocuObject](format.md#DocuObject)
+Each entry in a `properties` or `items` array is a object of type `DocuObject` that can have the properties as described in details under [DocuObject](README.md#DocuObject)
   
 ## Example
 

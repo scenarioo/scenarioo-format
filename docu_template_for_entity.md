@@ -1,6 +1,6 @@
 ### <a name="Entity">Entity</a>
 
-**Purpose:** just a template to describe an entity in the format.md file
+**Purpose:** just a template to describe an entity in the README.md file
 
 **Location in File Sytem:**
 * Directory inside *parent entity directory* with a `entity.json` file inside.
