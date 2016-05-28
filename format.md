@@ -15,7 +15,7 @@ This doucmentation is targeted to two audiences:
 
 The following diagram gives a rough overview about the major entities in the scenarioo documentation model:
 
-![Scenarioo Domain Model](images/draw.io/scenarioo_domain_model_overview.png)
+![Scenarioo Domain Model](images/draw.io/scenarioo_domain_model_overview.svg)
 
 This major structure of your documenation is also reflected in the Scenarioo Viewer where the major navigation is based on this same structure.
 
@@ -31,8 +31,11 @@ Entity Type | Description  | Storage Format
 [Build](#Build)       | A build reflects a full generated documentation version on a specific point in time, this is the major container for all documentation data that you generate during a full build run that tests and documents your software. You would generate such a build for every change, e.g. on every push of changes to that branch. | A directory inside the parent branch directory with a `build.json` file inside, and all other documentation data belonging to that build as further sub directories.
 [Use Case](#Use-Case) | A use case documents a user goal a user of your system can perform with your system, that you want to have documented and tested as one group of test/usage scenarios. Usually you will structure your e2e/UI-tests by grouping them into such use cases. E.g. usually you will write one spec file or test class with several test cases or test scenarios to test and document all important scenarios of a use case. Take care to not choose your use cases to fine granular. Those should reflect hi level functions a user can perform with your documented systems. Allways use non-technical user or business language (as much as possible) to name your use cases. | A directory inside the parent build directory with a `usecase.json` file inside, and all other documentation data belonging to that use case (e.g. all usage or test scenarios) as further sub directories.
 [Scenario](#Scenario) | A scenario reflects one test case (aka "test scenario") that tests one typical or important flow through the documented use case. Each use case should be typically documented by a few test scenarios. Do not forget to not only test and document the simple happy scenarios, but also important alternative and exceptional scenarios: e.g. at least one alternative scenario for when the user enters invalid data and then corrects it and finally anyway completes the use case, and also important exceptional scenarios for when the user can not complete his goal, because e.g. some other system is not available or important preconditions are not met. | A directory inside the parent build directory with a `scenario.json` file inside, and all other documentation data (e.g. the interaction steps) are stored in further sub directories.
-[Step](#Step) | A step reflects one important interaction step or point in time in a test scenario flow. Each step usually consists of a screenshot (if your test is a UI test), further information about the step (e.g. description text, the page object function that triggered that step, input and output data, etc.), and probably also the HTML source code (if it is a web application). | Each description of a step of a scenario is stored as a json file inside the directory `steps` inside the parent scenario directory. The name of the step files are named by the index of the file in format `001.json` (3 digit numbers, or more digits in case you have scenarios with more than tousand steps), the first step index should be `0` and accordingly the first step file is stored as `000.json`. Screenshots of steps have to be stored in a separate optional directory `screenshots` inside the parent scenario directory. And also the html sources are stored in an optional directory `html` inside the scenario directory. All these files have to follow the same naming conventions to have the same name containing the step index they belong to: `000.png` or `000.jpeg` and `000.html`.
+[Step](#Step) | A step reflects one important interaction step or point in time in a test scenario flow. Each step usually consists of a screenshot (if your test is a UI test), further information about the step (e.g. description text, the page object function that triggered that step, input and output data, etc.), and probably also the HTML source code (if it is a web application). | Each description of a step of a scenario is stored as a json file inside the directory `steps` inside the parent scenario directory. The name of the step files are named by the index of the file in format `001.json` (3 digit numbers, or more digits in case you have scenarios with more than tousand steps), the first step index should be `0` and accordingly the first step file is stored as `000.json`.
 [Page](#Page) | To improve the navigability in your scenarioo documentation you should try to group all interaction steps in your scenarios by pages. Several steps inside a scenario usually happen on the same page (or view, or dialog or whatsoever), and you can use a page object inside your step description to describe such pages. The `id` field (usually generated by libraries from the `name` field) of such a page identifies it, and inside scenario you can then easily navigate between different scenarios that interact with the same page or view or dialog more easily. | A page and any information about a page is simply stored inside the step description file of a step on the field `page`. Multiple steps can refer to the same page by simply storing an object inside the field `page` with the same `name` and same `id` values inside it (yes, we know that our documentation format is somehow redundant here, but since this data is generated, it causes no real problem here)
+[Screenshot](#Screenshot) | Each step can have (optionaly) one Screenshot to display the user interface of that step. | Screenshots of steps have to be stored in a separate optional directory `screenshots` inside the parent scenario directory and have to follow the same naming convention as for steps, with the step index as filename: `000.png`, `001.jpeg`, etc.
+[HTML Source](#HTML-Source) | You can also store the HTML source for each step to be displayed in the documentation | HTML Sources can be stored in an optional directory `html` inside the scenario directory. HTML source files have the same name as the step index and end with `.html`: `000.html`, `001.html`, etc.
+[ScreenAnnotation](#ScreenAnnotation) | Screen annotations are rectangular areas on a step screenshot to highlight them and add additional documentation data to this specific screen areas. This can be used to document where on the screen the test/user interacted (button clicked, data entered, URL changed, etc.) or to highlight special important areas of the screen and to attach arbitrary additional documentation data to this areas (e.g. options the user can choose in a dropdown list, URL a link is pointing to, visual regression test check areas, etc.) | ScreenAnnotations can be optionaly stored as objects in an array on the field `screenAnnotations` inside the step description file.
 
 Additionaly to these basic model there are some additional important data types for storing more detailed application specific documentation data as part of the above described entities inside their json files.
 
@@ -229,22 +232,20 @@ sections | [Sections](#Sections): Array of [DocuObject](#DocuObject) | For even 
 
 ### <a name="Step">Step</a>
 
-**Purpose:** A step is an important interaction event or state inside a test scenario that is documented. A scenario is made up of several steps that are taken during the test execution. Several steps can happen on the same page (or view) of your user interface.
+**Purpose:** A step is an important interaction event or state inside a test scenario that is documented. A scenario is made up of several steps that are recorded during the test execution. Several steps can happen on the same page (or view) of your user interface.
 
 **Location in File Sytem:**
 * Each step is documented in a json file contained in directory `steps` inside the *parent scenario directory*.
 * Step files have the same name as the `index` of the step, but formatted to 3 digits: `000.json`, `001.json` etc.
-* Usually a step has a screenshot attached, screenshots are stored in separate directory `screenshots` inside the *parent scenario directory*. Also the screenshot file of each step has to have the same index of that step as a file name in three digit format, e.g. `000.png` or `001.jpeg`. Currently scenarioo supports PNG or Jpeg as screenshot formats (or even other standard web graphics migth work, but PNG is recommended in most cases). A screenshot for a step is optional but recommended.
-* Optionaly you can also store the HTML source for a step in a separate directory `html` inside the *parent scenario directory*. Also the html file of each step has to have the same index of that step as a file name in three digit format, e.g. `000.html` for the first step.
 * If the folder `steps` is missing or does not contain any step files for a scenario, then Scenarioo will still display this scenario, but simply without steps.
 
 **Fields inside a *step json file*:**
 
 Name | Type / Format | Description  | Rules
 :---|:---|:---|:---
-index       | Integer | A simple integer value that defines the index of the step. Sequential number, starting with 0 for the first step, 1 for second step and so on, no gaps allowed. | Required, unique for each step
+index       | [Integer](#Integer) | The index of the step:  Sequential number, starting with 0 for the first step, 1 for second step and so on, no gaps allowed. | Required, unique for each step
 name        | [String](#String)  | Short display name for the step. Short explanation about this step (if easily available from your tests) | Optional
-id          | [Identifier-String](#identifier_string) | Identifier used for this step in URLs. Set this if you can set a unique and more stable id for each step, that stays more stable for the same step than the generated id, for the same step over several build runs, even if the scenario is changed. | Optional, Unique for each step inside same scenario (if not available, the server will calculate a unique id for your step from page name, occurence of that page in your scenario and index of the step inside the same page)
+id          | [Identifier-String](#Identifier-String) | Identifier used for this step in URLs. Set this if you can set a unique and more stable id for each step, that stays more stable for the same step than the generated id, for the same step over several build runs, even if the scenario is changed. | Optional, Unique for each step inside same scenario (if not available, the server will calculate a unique id for your step from page name, occurence of that page in your scenario and index of the step inside the same page)
 description | [String](#String)  | More longer description text of a step, if you want to add additional textual description for steps. | Optional
 title       | [String](#String) | The title that is currently displayed for the screen in the browser window title bar or as a title on the page itself (this makes it possible to search for texts inside this titles in scenarioo). | Optional
 visibleText | [String](#String) | Can be used to store all visible text on current screen that is used for full text search inside scenarioo | Optional
@@ -316,7 +317,7 @@ sections | [Sections](#Sections): Array of [DocuObject](#DocuObject) | For even 
 Name | Type / Format | Description  | Rules
 :---|:---|:---|:---
 name        | [String](#String)  | Display name. Use something that identifies your page. This could be a file name of the source code of your page or your view. For web applications it is usually that part of the URL (only!) that identifies the page the user is currently on (without parameters for content data): jsp-Page names, AngularJS routes, etc. are good candidadtes for page names, but you have to decide depending on your application type. | Required
-id          | [Identifier-String](#identifier_string) | Identifier used for this entity in URLs. | Optional (calculated by server from `name`, if not set).
+id          | [Identifier-String](#Identifier-String) | Identifier used for this entity in URLs. | Optional (calculated by server from `name`, if not set).
 description | [String](#String)  | A short description text for this page. | Optional
 labels      | [Labels](#Labels)   | Add some categories that are important to categorize this page as labels to mark all such pages of special kinds. | Optional
 properties  | [Properties](#Properties): Array of [DocuObject](#DocuObject) | For additional properties to add arbitrary appplication specific docu data as important attributes of this page (displayed in the viewer on an object's details page right below the other direct field values of this object) | Optional
@@ -331,6 +332,30 @@ properties  | [Properties](#Properties): Array of [DocuObject](#DocuObject) | Fo
     }
 ```
 
+### <a name="Screenshot">Screenshot</a>
+
+**Purpose:** Usually a step has a screenshot of the user interface attached to see, what the user was doing in this step. Screenshots are optional but recommended.
+
+**Location in File Sytem:**
+* One Screenshot for each step can be stored in directory `screenshots` inside the *parent scenario directory*.
+* The screenshot files has the same name as the `index` of the step the screenshot belongs to, but formatted to 3 digits: `000.png`, `001.jpeg` etc.
+* If the folder `screenshots` is missing or a step does not have a screenshot file in this directory, then the step will be displayed without screenshot.
+
+**Suppported Image formats:** <br/>
+Scenarioo supports all image formats that most web browsers can display, this means:
+   * PNG: screenshot files ending with `.png`
+   * JPEG: screenshot files ending with `.jpeg`
+   * GIF: screenshot files ending with `.gif`
+   * SVG: graphics ending with `.svg` (should work with most modern browsers)
+
+### <a name="HTML-Source">HTML Source</a>
+
+**Purpose:** It can be helpful for web applications to also document the underlying HTML source for each user interface step, which is helpfull for styling issues or for debugging purpose.
+
+**Location in File Sytem:**
+* One HTML source file for each step can be stored in directory `html` inside the *parent scenario directory*.
+* The HTML Source file for a step has the same name as the `index` of the step the html belongs to, but formatted to 3 digits: `000.html`, `001.html` etc.
+* If the folder `html` is missing or a step does not have a html source file in this directory, then the step will be displayed without the tab for the html sources.
 
 ### <a name="ScreenAnnotation">ScreenAnnotation</a>
 
@@ -404,8 +429,8 @@ Name | Type / Format | Description | Rules
 :---|:---|:---|:---
 labelKey | [String](#String) | Kind of the identifier (key) and the label text for the property or the relation to an item. Can be used for configuration purpose, e.g. to select some special property values to display in some special views e.g. as table columns. And this field is special since it does not realy belong to the information value object, meaning, that same object value, even typed value, can occur with multiple different label keys of course. | For objects in [Properties](#Properties) and in [Sections](#Sections) this is required, for other objects as in [Items](#Items) it is optional. The `labelKey` must be unique inside the objects parent Properties- or Sections-collection, furthermore the key should be even unique inside the parent object for all its children objects to identify the relation to that object (the property or section, or optionaly even the item).
 value | [String](#String) | display text to display as value | Optional, recommended for most objects that have a well defined value or display text, except for collection objects like a list of subitems that do not have a value and identity on their own.
-type | [Identifier-String](#identifier_string) | A type identifier to group different type of objects, examples: UiElement, PageObject, Service, Feature, Story, ... Whatever types make sense to be defined in your application. Scenarioo Viewer can display typed objects in additional search tabs, to see all objects of one or several types in one view to easily search for them. | Optional
-id | [Identifier-String](#identifier_string) | A unique identifier for this typed object that is not allowed to contain some special characters. If not set explicitly the libraries will calculate this identifier for you from the object's value by sanitizing unallowed characters. This id will not be displayed but will be used in URLs and internaly for identification and comparison of objects and for storing the objects. It is recommended to keep this field unchanged for object's when they change their value (=display text), to keep trackable how this documented objects evolve between different builds. | Optional. Objects that have a type will get an id automatically assigned from the server, that is calculated from `name`, in case `id` is not set explicitly.
+type | [Identifier-String](#Identifier-String) | A type identifier to group different type of objects, examples: UiElement, PageObject, Service, Feature, Story, ... Whatever types make sense to be defined in your application. Scenarioo Viewer can display typed objects in additional search tabs, to see all objects of one or several types in one view to easily search for them. | Optional
+id | [Identifier-String](#Identifier-String) | A unique identifier for this typed object that is not allowed to contain some special characters. If not set explicitly the libraries will calculate this identifier for you from the object's value by sanitizing unallowed characters. This id will not be displayed but will be used in URLs and internaly for identification and comparison of objects and for storing the objects. It is recommended to keep this field unchanged for object's when they change their value (=display text), to keep trackable how this documented objects evolve between different builds. | Optional. Objects that have a type will get an id automatically assigned from the server, that is calculated from `name`, in case `id` is not set explicitly.
 properties | [Properties](#Properties): Array of [DocuObject](#DocuObject) | For complex objects having again `DocuObject`s for its attribute values | Optional
 items | [Items](#Items): Array of [DocuObject](#DocuObject) | For objects that contain other objects as items (e.g. same as a usecase that contains scenarios), those objects can contain again `DocuObject`s  as its items. `labelKey` is not required inside this objects contained here. | Optional
 
@@ -449,11 +474,15 @@ For more detailed description and more complex examples, see [`Scenarioo Object 
 
 ## Data Types
 
+### <a name="Integer">Integer</a>
+
+A usual integer number.
+
 ### <a name="String">String</a>
 
 A regular string as defined by the JSON format, all characters in UTF-8 are allowed.
 
-### <a name="identifier_string">Identifier-Sring</a>
+### <a name="Identifier-String">Identifier-Sring</a>
 
 All fields that are used as identifiers and therefore can be part of a URL have this type, and in this kind of string only usual characters are allowed, no spaces, no slashes and not other special characters, except for `-` and `_`.
 
@@ -491,6 +520,42 @@ The value of a `sections` field is an array of [DocuObject](#DocuObject). Each c
 
 The value of an `items` field is a simple array of [DocuObject](#DocuObject). No special rules apply to the contained docu objects. The array may also be empty or missing.
 
+### <a name="ScreenRegion">ScreenRegion</a>
+
+A screen region is a rectangular area on a screenshot. It is an object having following fields:
+
+Name | Type / Format | Description | Rules
+:---|:---|:---|:---
+x  | [Integer](#Integer) | x corrdinate in pixels on the screenshot | Required
+y  | [Integer](#Integer) | y corrdinate in pixels on the screenshot | Required
+width | [Integer](#Integer) | width in pixels of the rectangular area | Required
+height | [Integer](#Integer) | height in pixels of the rectangular area | Required
+
+### <a name="ScreenAnnotationStyle">ScreenAnnotationStyle</a>
+
+Enum of possible string values for [ScreenAnnotation](#ScreenAnnotation)'s `style` field. Following values are supported:
+
+Value | Description
+:---|:---
+`DEFAULT` | A simple annotation with no special style (no icon), same style is used if style field is not set.
+`INFO` | For information annotations, with an information icon.
+`WARN` | For warning annotations, with a warning icon.
+`ERROR` | For error annotations, with an error icon.
+`HIGHLIGHT` | For annotations that highlight a special area of interest in a screenshot.
+`EXPECTED` | For annotations that mark an area where something was successfully validated, with a check mark as icon (e.g. for input fields where the test expected some values to be contained)
+`CLICK` | For click annotations, e.g. for UI elements that have been clicked in the test.
+`KEYBOARD`| For annotations to mark input fields where the user entered some data or to inform about keyboard events.
+`NAVIGATE_TO_URL` | To inform that the user entered or browsed to some special URL to get to this page.
+
+### <a name="ScreenAnnotationClickAction">ScreenAnnotationClickAction</a>
+
+Enum of possible string values for [ScreenAnnotation](#ScreenAnnotation)'s `clickAction` field. Following values are supported:
+
+Value | Description
+:---|:---
+(null) | No clickAction value means, that no special click action will happen when clicking on the rectangular area of a ScreenAnnotation in the Scenarioo Viewer. In that case the default behaviour will be used, which is to open a popup dialog that shows all the attached information of a screen annotation and that can allways be opened, when clicking on the icon on the screen annotation (also when one of the other values is set).
+`TO_URL` | when the user clicks on the Screen Annotation in the Scenarioo Viewer the url in `clickActionUrl` will be opened in a new browser tab.
+`TO_NEXT_STEP` | when the user clicks on the screen annotation, he will browse to the next step in the same scenario. Useful to annotate click elements that caused the test scenario to proceed to a new step.
 
 # Migration to Format 3.x
 
