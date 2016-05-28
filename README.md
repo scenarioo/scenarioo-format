@@ -15,7 +15,7 @@ This doucmentation is targeted to two audiences:
 
 The following diagram gives a rough overview about the major entities in the scenarioo documentation model:
 
-![Scenarioo Domain Model](images/draw.io/scenarioo_domain_model_overview.svg)
+![Scenarioo Domain Model](images/draw.io/scenarioo_domain_model_overview.png)
 
 This major structure of your documenation is also reflected in the Scenarioo Viewer where the major navigation is based on this same structure.
 
