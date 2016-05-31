@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "index": { "type": "integer" },
+    "id": { "$ref": "/subschema/identifier" },
+    "title": { "$ref": "/subschema/title" },
+    "status": { "$ref": "/subschema/status" },
+    "labels": { "$ref": "/subschema/labels" },
+    "visibleText": { "$ref": "/subschema/visibleText" },
+    "page": { "$ref": "/subschema/page" },
+    "screenAnnotations": { "$ref": "/subschema/screenAnnotations" },
+    "properties": { "$ref": "/subschema/docuObjectList" },
+    "sections": { "$ref": "/subschema/docuObjectList" }
+  },
+  "required": [
+    "index"
+  ],
+  "additionalProperties": false
+}
