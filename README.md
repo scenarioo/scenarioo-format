@@ -136,10 +136,16 @@ properties  | [Properties](#Properties): Array of [DocuObject](#DocuObject) | Fo
         "revision" : "1.0.4-1290FE2",
         "date" : "2014-01-20T00:00:00+01:00",
         "status" : "success",
-        "properties" {
-            "trigger" : "manual",
-            "duration" : "14 min 12 sec"
-        }
+        "properties": [
+            {
+                "labelKey": "trigger",
+                "value": "manual"
+            },
+            {
+                "labelKey": "duration",
+                "value": "14 min 12 sec"
+            }
+        ]
     }
 ```
 
@@ -174,10 +180,13 @@ sections | [Sections](#Sections): Array of [DocuObject](#DocuObject) | For even 
     	"labels" : [
     		"public"
     	],
-    	"properties" : {
-    		"Test-Class" : "org.wiki.example.webtests.FindArticleWebTest"
-    	},
-    	"sections" : {
+    	"properties" : [
+            {
+                "labelKey": "Test-Class",
+                "value": "org.wiki.example.webtests.FindArticleWebTest"
+            }
+        ],
+        "sections" : {
     	    "labelKey": "Requirements",
     	    "value": "Could be any value or even long text or data structure, like epics, user stories, etc. that give more information about the requirements of this use case ... you can add arbitrary DocuObject data here ..."
     	}
@@ -217,10 +226,16 @@ sections | [Sections](#Sections): Array of [DocuObject](#DocuObject) | For even 
     	"labels" : [
             "happy"
         ],
-    	"properties" : {
-    		"User Role" : "not authenticated",
-    		"Test": "FindArticleWebTest.multipleResults"
-    	},
+    	"properties" : [
+			{
+				"labelKey": "User Role",
+				"value": "not authenticated",
+			},
+			{
+				"labelKey": "Test",
+				"value": "FindArticleWebTest.multipleResults"
+			}
+    	],
     	"sections": [
     	    {
     	        "labelKey": "Test Code",
